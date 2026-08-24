@@ -1,13 +1,15 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
  * A minimal command-line entry point for the Loki task manager.
  */
 public class Loki {
-    public static Boolean activeSession = true;
+    private static Boolean activeSession = true;
+    private static Random mischief = new Random();
     public static void main(String[] args) throws IOException {
         String splash = "|        ____   |   / |____|\n"
                 + "|       /    \\  |  /     |  \n"
@@ -50,9 +52,16 @@ public class Loki {
         bannerHeavy();
     }
     private static void exit() {
+        String farewells[] = { 
+            "We will meet again, mortal", 
+            "For you, for all of us",
+            "Toodles~",
+            "You'll be back",
+            "Oh to be burdened with glorious purpose" 
+        };
         activeSession = false;
         bannerHeavy();
-        System.out.println("        We will meet again, mortal");
+        System.out.println("        " + farewells[mischief.nextInt(farewells.length)]);
         bannerHeavy();
     }
     private static void echo(String str) {
