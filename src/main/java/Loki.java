@@ -68,8 +68,9 @@ public class Loki {
             } else {
                 task.unmarkDone();
             }
-            System.out.println("compliant");
-            System.out.println(task);
+            // System.out.println("compliant");
+            LokiDialogue.obedient(task.toString());
+            // System.out.println(task);
         } catch (IndexOutOfBoundsException | NumberFormatException exception) {
             LokiDialogue.youarestupid();
         }
