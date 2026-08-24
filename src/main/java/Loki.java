@@ -30,37 +30,54 @@ public class Loki {
 
         while (activeSession) {
             String input = scanner.nextLine();
-            String[] words = input.trim().split("\\s+");
-            String keyword = words[0].toLowerCase();
-            switch (keyword) {
-            case "faretheewell":
-            case "exit":
-                activeSession = false;
-                LokiDialogue.exit();
-                break;
-            case "list":
-                if (tasksCount == 0) {
-                    LokiDialogue.echo("You lack any tasks"); 
-                } else {
-                    listTasks();
+            try {
+                String trimmedInput = input.trim();
+                if (trimmedInput.isEmpty()) {
+                    throw LokiExceptions.emptyInput();
                 }
-                break;
-            case "mark":
-                updateTaskStatus(words, true);
-                break;
-            case "unmark":
-                updateTaskStatus(words, false);
-                break;
-            default:
-                Task task = createTask(input);
-                add(task);
-                LokiDialogue.obedient(task.toString());
-                LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasksCount));
+
+                String[] words = trimmedInput.split("\\s+");
+                String keyword = words[0].toLowerCase();
+                switch (keyword) {
+                case "faretheewell":
+                case "exit":
+                    activeSession = false;
+                    LokiDialogue.exit();
+                    break;
+                case "list":
+                    if (tasksCount == 0) {
+                        LokiDialogue.echo("You lack any tasks");
+                    } else {
+                        listTasks();
+                    }
+                    break;
+                case "mark":
+                    updateTaskStatus(words, true);
+                    break;
+                case "unmark":
+                    updateTaskStatus(words, false);
+                    break;
+                case "todo":
+                case "deadline":
+                case "event":
+                    Task task = createTask(input);
+                    add(task);
+                    LokiDialogue.obedient(task.toString());
+                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasksCount));
+                    break;
+                default:
+                    throw LokiExceptions.unknownCommand();
+                }
+            } catch (LokiExceptions exception) {
+                LokiDialogue.error(exception.getMessage());
             }
         }
         scanner.close();
     }
-    private static void add(Task task) {
+    private static void add(Task task) throws LokiExceptions {
+        if (tasksIndex >= tasks.length) {
+            throw LokiExceptions.taskListFull();
+        }
         tasks[tasksIndex++] = task;
         tasksCount++;
     }
@@ -71,54 +88,64 @@ public class Loki {
      * @param input the complete input line
      * @return the task represented by the input
      */
-    private static Task createTask(String input) {
+    private static Task createTask(String input) throws LokiExceptions {
         String trimmedInput = input.trim();
         String[] words = trimmedInput.split("\\s+");
         String keyword = words[0].toLowerCase();
 
         switch (keyword) {
         case "todo":
-            return new ToDo(afterKeyword(trimmedInput, keyword));
+            String title = afterKeyword(trimmedInput, keyword);
+            if (title.isEmpty()) {
+                throw LokiExceptions.invalidToDo();
+            }
+            return new ToDo(title);
         case "deadline":
             return createDeadline(trimmedInput, keyword);
         case "event":
             return createEvent(trimmedInput, keyword);
         default:
-            return new ToDo(input);
+            throw LokiExceptions.unknownCommand();
         }
     }
 
     /**
      * Creates a deadline task using the `/by` marker.
      */
-    private static Task createDeadline(String input, String keyword) {
+    private static Task createDeadline(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase();
         int byIndex = lowerBody.indexOf("/by ");
         if (byIndex < 0) {
-            return new ToDo(input);
+            throw LokiExceptions.invalidDeadline();
         }
 
         String title = body.substring(0, byIndex).trim();
         String due = body.substring(byIndex + 4).trim();
+        if (title.isEmpty() || due.isEmpty()) {
+            throw LokiExceptions.invalidDeadline();
+        }
         return new Deadline(title, due);
     }
 
     /**
      * Creates an event task using `/from` and `/to` markers.
      */
-    private static Task createEvent(String input, String keyword) {
+    private static Task createEvent(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase();
         int fromIndex = lowerBody.indexOf("/from ");
         int toIndex = lowerBody.indexOf("/to ", fromIndex + 6);
         if (fromIndex < 0 || toIndex < 0) {
-            return new ToDo(input);
+            throw LokiExceptions.invalidEvent();
         }
 
         String title = body.substring(0, fromIndex).trim();
         String from = body.substring(fromIndex + 6, toIndex).trim();
         String to = body.substring(toIndex + 4).trim();
+        if (title.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            throw LokiExceptions.invalidEvent();
+        }
         return new Event(title, from, to);
     }
 
@@ -129,23 +156,29 @@ public class Loki {
         return input.substring(keyword.length()).trim();
     }
 
-    private static void updateTaskStatus(String[] words, boolean mark) {
-        try {
-            int taskIndex = Integer.parseInt(words[1]) - 1;
-            if (taskIndex < 0 || taskIndex >= tasksIndex) {
-                throw new IndexOutOfBoundsException();
-            }
-
-            Task task = tasks[taskIndex];
-            if (mark) {
-                task.markDone();
-            } else {
-                task.unmarkDone();
-            }
-            LokiDialogue.obedient(task.toString());
-        } catch (IndexOutOfBoundsException | NumberFormatException exception) {
-            LokiDialogue.youarestupid();
+    private static void updateTaskStatus(String[] words, boolean mark) throws LokiExceptions {
+        if (words.length < 2) {
+            throw LokiExceptions.invalidTaskNumber();
         }
+
+        int taskIndex;
+        try {
+            taskIndex = Integer.parseInt(words[1]) - 1;
+        } catch (NumberFormatException exception) {
+            throw LokiExceptions.invalidTaskNumber();
+        }
+
+        if (taskIndex < 0 || taskIndex >= tasksIndex) {
+            throw LokiExceptions.invalidTaskNumber();
+        }
+
+        Task task = tasks[taskIndex];
+        if (mark) {
+            task.markDone();
+        } else {
+            task.unmarkDone();
+        }
+        LokiDialogue.obedient(task.toString());
     }
     private static void listTasks() {
         LokiDialogue.banner();

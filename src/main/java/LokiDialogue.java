@@ -26,11 +26,21 @@ public class LokiDialogue {
         "Consider it done.",
         "The task is complete.",
         "As Odin would have it",
-        "Done. Surely you didn’t expect anything less.",
+        "Done. Surely you didn't expect anything less.",
         "Completed, precisely as ordered",
         "Your task has been accomplished. Another problem resolved by yours truly.",
         "It is done.",
         "Finished. As expected of a God such as I."
+    };
+
+    public static final String[] LOKIEXCEPTION = {
+        "I'm afraid I don't understand that command. \n        Perhaps try wording it a little more clearly.",
+        "That command eludes me. \n        Do enlighten me—what exactly are you trying to accomplish?",
+        "I'm not entirely certain what you mean. \n        Even the God of Mischief has limits.",
+        "An intriguing command, but one I cannot decipher. \n        Try again, and perhaps be a little less cryptic.",
+        "I don't understand the command you've given me. \n        Care to make your intentions clearer?",
+        "Whatever that command was meant to accomplish, \n        I'm afraid it escaped me entirely.",
+        "That is not a command I recognise. \n        Shall we try that again, this time with slightly less mystery?"
     };
 
     /**
@@ -81,6 +91,22 @@ public class LokiDialogue {
     }
 
     /**
+     * Prints a temporary response for an unrecognised command.
+     */
+    public static void notUnderstanding() {
+        printDialogue(pickRandom(LOKIEXCEPTION));
+    }
+
+    /**
+     * Prints an input error.
+     *
+     * @param message the error message to display
+     */
+    public static void error(String message) {
+        printDialogue(message);
+    }
+
+    /**
      * Prints one or more dialogue lines using the normal banner format.
      *
      * @param lines the dialogue lines to print
@@ -120,5 +146,14 @@ public class LokiDialogue {
      */
     private static String pickRandom(String[] choices) {
         return choices[MISCHIEF.nextInt(choices.length)];
+    }
+
+    /**
+     * Returns a randomly selected Loki exception message.
+     *
+     * @return a random exception message
+     */
+    public static String randomExceptionMessage() {
+        return "Loki error: " + pickRandom(LOKIEXCEPTION);
     }
 }
