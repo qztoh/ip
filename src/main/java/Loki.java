@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Scanner;
 
 /**
  * A minimal command-line entry point for the Loki task manager.
@@ -21,21 +22,41 @@ public class Loki {
         System.out.println(splash);
         System.out.println(logo);
         greeting();
-        exit();
+
+        Scanner scanner = new Scanner(System.in);
+        boolean activeSession = true;
+
+        while (activeSession) {
+            String command = scanner.nextLine();
+            if (command.equalsIgnoreCase("faretheewell")) {
+                activeSession = false;
+                exit();
+            } else {
+                echo(command);
+            }
+        }
     }
 
-    private static void banner() {
+    private static void bannerHeavy() {
         System.out.println("======================================================");
     }
+    private static void banner() {
+        System.out.println("------------------------------------------------------");
+    }
     private static void greeting() {
-        banner();
-        System.out.println("Greetings, mortal");
-        System.out.println("Loki the Trickster God at your service");
+        bannerHeavy();
+        System.out.println("        Greetings, mortal");
+        System.out.println("        Loki the Trickster God at your service");
+        bannerHeavy();
     }
     private static void exit() {
         activeSession = false;
+        bannerHeavy();
+        System.out.println("        We will meet again, mortal");
+        bannerHeavy();
+    }
+    private static void echo(String str) {
         banner();
-        System.out.println("We will meet again, mortal");
-        banner();
+        System.out.println("    " + str + "\n");
     }
 }
