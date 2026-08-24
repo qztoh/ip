@@ -1,15 +1,14 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * A minimal command-line entry point for the Loki task manager.
  */
 public class Loki {
-    private static final Task[] tasks = new Task[100];
-    private static int tasksIndex = 0;
-    private static int tasksCount = 0;
+    private static final ArrayList<Task> tasks = new ArrayList<>();
     public static void main(String[] args) throws IOException {
         String splash = "|        ____   |   / |____|\n"
                 + "|       /    \\  |  /     |  \n"
@@ -45,7 +44,7 @@ public class Loki {
                     LokiDialogue.exit();
                     break;
                 case "list":
-                    if (tasksCount == 0) {
+                    if (tasks.isEmpty()) {
                         LokiDialogue.echo("You lack any tasks");
                     } else {
                         listTasks();
@@ -63,7 +62,12 @@ public class Loki {
                     Task task = createTask(input);
                     add(task);
                     LokiDialogue.obedient(task.toString());
-                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasksCount));
+                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
+                    break;
+                case "delete":
+                    Task deletedTask = deleteTask(words);
+                    LokiDialogue.obedient(deletedTask.toString());
+                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
                     break;
                 default:
                     throw LokiExceptions.unknownCommand();
@@ -74,12 +78,8 @@ public class Loki {
         }
         scanner.close();
     }
-    private static void add(Task task) throws LokiExceptions {
-        if (tasksIndex >= tasks.length) {
-            throw LokiExceptions.taskListFull();
-        }
-        tasks[tasksIndex++] = task;
-        tasksCount++;
+    private static void add(Task task) {
+        tasks.add(task);
     }
 
     /**
@@ -157,6 +157,31 @@ public class Loki {
     }
 
     private static void updateTaskStatus(String[] words, boolean mark) throws LokiExceptions {
+        int taskIndex = taskIndexFrom(words);
+        Task task = tasks.get(taskIndex);
+        if (mark) {
+            task.markDone();
+        } else {
+            task.unmarkDone();
+        }
+        LokiDialogue.obedient(task.toString());
+    }
+
+    /**
+     * Removes a task using its one-based list number.
+     *
+     * @param words the command words, including the task number
+     * @throws LokiExceptions if the task number is missing or invalid
+     */
+    private static Task deleteTask(String[] words) throws LokiExceptions {
+        int taskIndex = taskIndexFrom(words);
+        return tasks.remove(taskIndex);
+    }
+
+    /**
+     * Converts a one-based task number from user input to an ArrayList index.
+     */
+    private static int taskIndexFrom(String[] words) throws LokiExceptions {
         if (words.length < 2) {
             throw LokiExceptions.invalidTaskNumber();
         }
@@ -168,22 +193,16 @@ public class Loki {
             throw LokiExceptions.invalidTaskNumber();
         }
 
-        if (taskIndex < 0 || taskIndex >= tasksIndex) {
+        if (taskIndex < 0 || taskIndex >= tasks.size()) {
             throw LokiExceptions.invalidTaskNumber();
         }
-
-        Task task = tasks[taskIndex];
-        if (mark) {
-            task.markDone();
-        } else {
-            task.unmarkDone();
-        }
-        LokiDialogue.obedient(task.toString());
+        return taskIndex;
     }
+
     private static void listTasks() {
         LokiDialogue.banner();
-        for (int i = 0; i < tasksIndex; i++) {
-            System.out.println(String.format("      %s. %s", i + 1, tasks[i]));
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(String.format("      %s. %s", i + 1, tasks.get(i)));
         }
         System.out.println("");
     }

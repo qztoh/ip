@@ -66,12 +66,4 @@ public class LokiExceptions extends Exception {
         return new LokiExceptions();
     }
 
-    /**
-     * Creates an error for a task list that has reached its capacity.
-     *
-     * @return the full-list error
-     */
-    public static LokiExceptions taskListFull() {
-        return new LokiExceptions();
-    }
 }

@@ -305,6 +305,54 @@ You have 1 tasks left to conquer.
 1. [T][ ] Valid after errors
 ```
 
+## Test Case UI-017: Delete a task and reindex the list
+
+### Aim
+
+Verify that deleting the first task removes it and shifts the remaining task to index 1.
+
+### Inputs
+
+```text
+todo First task
+todo Second task
+delete 1
+list
+exit
+```
+
+### Expected output
+
+```text
+You have 2 tasks left to conquer.
+Deleted: [T][ ] First task
+You have 1 tasks left to conquer.
+1. [T][ ] Second task
+```
+
+## Test Case UI-018: Invalid deletion does not change the list
+
+### Aim
+
+Verify that an invalid deletion index reports an error and leaves the task list unchanged.
+
+### Inputs
+
+```text
+todo Keep this task
+delete 0
+list
+exit
+```
+
+### Expected output
+
+```text
+You have 1 tasks left to conquer.
+Loki error:
+1. [T][ ] Keep this task
+```
+
 ## Test Case UI-008: Reject an invalid task number
 
 ### Aim
