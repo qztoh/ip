@@ -1,17 +1,14 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
  * A minimal command-line entry point for the Loki task manager.
  */
 public class Loki {
-    private static Boolean activeSession = true;
-    private static Random mischief = new Random();
-    private static String commands[] = new String[100];
-    private static int commandsIDX = 0;
+    private static final Task[] tasks = new Task[100];
+    private static int tasksIndex = 0;
     public static void main(String[] args) throws IOException {
         String splash = "|        ____   |   / |____|\n"
                 + "|       /    \\  |  /     |  \n"
@@ -22,68 +19,65 @@ public class Loki {
         Path pathLoki = Path.of("loki.txt");
         String logo = Files.readString(pathLoki);
 
-        banner();
+        LokiDialogue.banner();
         System.out.println(splash);
         System.out.println(logo);
-        greeting();
+        LokiDialogue.greeting();
 
         Scanner scanner = new Scanner(System.in);
         boolean activeSession = true;
 
         while (activeSession) {
-            String command = scanner.nextLine();
-            command = command.toLowerCase();
-            switch (command) {
+            String input = scanner.nextLine();
+            String[] words = input.trim().split("\\s+");
+            String keyword = words[0].toLowerCase();
+            switch (keyword) {
             case "faretheewell":
+            case "exit":
                 activeSession = false;
-                exit();
+                LokiDialogue.exit();
                 break;
             case "list":
-                listCommands();
+                listTasks();
+                break;
+            case "mark":
+                updateTaskStatus(words, true);
+                break;
+            case "unmark":
+                updateTaskStatus(words, false);
                 break;
             default:
-                add(command);
-                echo("added: " + command);
+                add(new Task(input));
+                LokiDialogue.echo("added: " + input);
             }
         }
     }
+    private static void add(Task task) {
+        tasks[tasksIndex++] = task;
+    }
+    private static void updateTaskStatus(String[] words, boolean mark) {
+        try {
+            int taskIndex = Integer.parseInt(words[1]) - 1;
+            if (taskIndex < 0 || taskIndex >= tasksIndex) {
+                throw new IndexOutOfBoundsException();
+            }
 
-    private static void bannerHeavy() {
-        System.out.println("======================================================");
+            Task task = tasks[taskIndex];
+            if (mark) {
+                task.markDone();
+            } else {
+                task.unmarkDone();
+            }
+            System.out.println("compliant");
+            System.out.println(task);
+        } catch (IndexOutOfBoundsException | NumberFormatException exception) {
+            LokiDialogue.youarestupid();
+        }
     }
-    private static void banner() {
-        System.out.println("------------------------------------------------------");
-    }
-    private static void greeting() {
-        bannerHeavy();
-        System.out.println("        Greetings, mortal");
-        System.out.println("        Loki the Trickster God at your service");
-        bannerHeavy();
-    }
-    private static void exit() {
-        String farewells[] = { 
-            "We will meet again, mortal", 
-            "For you, for all of us",
-            "Toodles~",
-            "You'll be back",
-            "Oh to be burdened with glorious purpose" 
-        };
-        activeSession = false;
-        bannerHeavy();
-        System.out.println("        " + farewells[mischief.nextInt(farewells.length)]);
-        bannerHeavy();
-    }
-    private static void echo(String str) {
-        banner();
-        System.out.println("    " + str + "\n");
-    }
-    private static void add(String command) {
-        commands[commandsIDX++] = command;
-    }
-    private static void listCommands() {
-        banner();
-        for (int i = 0; i < commandsIDX; i++) {
-            System.out.println(String.format("      %s. %s", i + 1, commands[i]));
+    private static void listTasks() {
+        LokiDialogue.banner();
+        for (int i = 0; i < tasksIndex; i++) {
+            System.out.println(String.format("      %s. %s", i + 1, tasks[i]));
         }
         System.out.println("");
     }
