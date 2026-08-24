@@ -9,8 +9,8 @@ Unless the user says otherwise, assume that you are assisting a student working 
 # Student profile
 
 * Prior knowledge: Basic Java and OOP concepts.
-* Level of programming experience: [to be filled]
-* IDE and level of expertise: [to be filled]
+* Level of programming experience: 2 years of H2 computing, 1 year of freshman level coding (data structures and algorithms, and java). proficient in python as well, learning C
+* IDE and level of expertise: VSCode and only 1 independent project, a food finder application inspired by dating apps 
 
 # Guidance for interacting with users
 
