@@ -10,6 +10,8 @@ import java.util.Scanner;
 public class Loki {
     private static Boolean activeSession = true;
     private static Random mischief = new Random();
+    private static String commands[] = new String[100];
+    private static int commandsIDX = 0;
     public static void main(String[] args) throws IOException {
         String splash = "|        ____   |   / |____|\n"
                 + "|       /    \\  |  /     |  \n"
@@ -30,11 +32,18 @@ public class Loki {
 
         while (activeSession) {
             String command = scanner.nextLine();
-            if (command.equalsIgnoreCase("faretheewell")) {
+            command = command.toLowerCase();
+            switch (command) {
+            case "faretheewell":
                 activeSession = false;
                 exit();
-            } else {
-                echo(command);
+                break;
+            case "list":
+                listCommands();
+                break;
+            default:
+                add(command);
+                echo("added: " + command);
             }
         }
     }
@@ -67,5 +76,15 @@ public class Loki {
     private static void echo(String str) {
         banner();
         System.out.println("    " + str + "\n");
+    }
+    private static void add(String command) {
+        commands[commandsIDX++] = command;
+    }
+    private static void listCommands() {
+        banner();
+        for (int i = 0; i < commandsIDX; i++) {
+            System.out.println(String.format("      %s. %s", i + 1, commands[i]));
+        }
+        System.out.println("");
     }
 }
