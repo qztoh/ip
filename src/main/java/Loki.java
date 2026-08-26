@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,20 +7,9 @@ import java.util.Scanner;
  */
 public class Loki {
     private static final ArrayList<Task> tasks = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
-        String splash = "|        ____   |   / |____|\n"
-                + "|       /    \\  |  /     |  \n"
-                + "|       |    |  |<       |  \n"
-                + "|       \\    /  |  \\     |  \n"
-                + "|_______ \\__/   |   \\ |____|\n";
-
-        Path pathLoki = Path.of("loki.txt");
-        String logo = Files.readString(pathLoki);
-
-        LokiDialogue.banner();
-        System.out.println(splash);
-        System.out.println(logo);
-        LokiDialogue.greeting();
+        LokiUi.showWelcome();
 
         Scanner scanner = new Scanner(System.in);
         boolean activeSession = true;
@@ -41,13 +28,13 @@ public class Loki {
                 case "faretheewell":
                 case "exit":
                     activeSession = false;
-                    LokiDialogue.exit();
+                    LokiUi.exit();
                     break;
                 case "list":
                     if (tasks.isEmpty()) {
-                        LokiDialogue.echo("You lack any tasks");
+                        LokiUi.echo("You lack any tasks");
                     } else {
-                        listTasks();
+                        LokiUi.listTasks(tasks);
                     }
                     break;
                 case "mark":
@@ -61,19 +48,17 @@ public class Loki {
                 case "event":
                     Task task = createTask(input);
                     add(task);
-                    LokiDialogue.obedient(task.toString());
-                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
+                    LokiUi.taskAdded(task, tasks.size());
                     break;
                 case "delete":
                     Task deletedTask = deleteTask(words);
-                    LokiDialogue.obedient(deletedTask.toString());
-                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
+                    LokiUi.taskDeleted(deletedTask, tasks.size());
                     break;
                 default:
                     throw LokiExceptions.unknownCommand();
                 }
             } catch (LokiExceptions exception) {
-                LokiDialogue.error(exception.getMessage());
+                LokiUi.error(exception.getMessage());
             }
         }
         scanner.close();
@@ -164,7 +149,7 @@ public class Loki {
         } else {
             task.unmarkDone();
         }
-        LokiDialogue.obedient(task.toString());
+        LokiUi.obedient(task.toString());
     }
 
     /**
@@ -199,11 +184,4 @@ public class Loki {
         return taskIndex;
     }
 
-    private static void listTasks() {
-        LokiDialogue.banner();
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(String.format("      %s. %s", i + 1, tasks.get(i)));
-        }
-        System.out.println("");
-    }
 }

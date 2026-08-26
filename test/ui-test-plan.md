@@ -4,7 +4,7 @@ Run this plan from the repository root with Java 25.
 
 - Program: `java -cp _temp/ui-classes Loki`
 - Working directory: `.`
-- Setup: `javac -d _temp/ui-classes src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java src/main/java/LokiExceptions.java src/main/java/LokiDialogue.java src/main/java/Loki.java`
+- Setup: `javac -d _temp/ui-classes src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java src/main/java/LokiUi.java src/main/java/LokiExceptions.java src/main/java/Loki.java`
 
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 
