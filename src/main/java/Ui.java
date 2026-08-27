@@ -1,21 +1,18 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
- * Handles all console output for Loki.
- *
- * <p>Keeping presentation logic here allows the command-processing code in
- * {@link Loki} to focus on interpreting commands and updating tasks.</p>
+ * Handles interaction with the user, including input and console output.
  */
-public class LokiUi {
+public class Ui implements AutoCloseable {
     private static final String DIALOGUE_INDENT = "        ";
     private static final String SPLASH = "|        ____   |   / |____|\n"
             + "|       /    \\  |  /     |  \n"
             + "|       |    |  |<       |  \n"
-            + "|       \\    /  |  \\     |  \n"
+            + "|       \\    /  |  \\ |  \n"
             + "|_______ \\__/   |   \\ |____|\n";
     private static final Random MISCHIEF = new Random();
     private static final String[] FAREWELLS = loadDialogue("farewells.txt");
@@ -23,12 +20,33 @@ public class LokiUi {
     private static final String[] VALID_TASK_RESPONSES = loadDialogue("valid-task-responses.txt");
     private static final String[] LOKIEXCEPTION = loadDialogue("loki-exceptions.txt");
 
-    private LokiUi() {
-        // Utility class; do not instantiate.
+    private final Scanner scanner;
+
+    /** Creates a UI that reads commands from standard input. */
+    public Ui() {
+        scanner = new java.util.Scanner(System.in);
+    }
+
+    /**
+     * Returns whether another command is available.
+     *
+     * @return true if another input line is available
+     */
+    public boolean hasNextLine() {
+        return scanner.hasNextLine();
+    }
+
+    /**
+     * Reads the next command line.
+     *
+     * @return the next input line
+     */
+    public String readLine() {
+        return scanner.nextLine();
     }
 
     /** Prints Loki's splash screen, logo, and greeting. */
-    public static void showWelcome() throws IOException {
+    public void showWelcome() throws IOException {
         String logo = Files.readString(resolveAsset("loki.txt"));
         banner();
         System.out.println(SPLASH);
@@ -37,17 +55,17 @@ public class LokiUi {
     }
 
     /** Prints a heavy divider. */
-    public static void bannerHeavy() {
+    public void bannerHeavy() {
         System.out.println("======================================================");
     }
 
     /** Prints a light divider. */
-    public static void banner() {
+    public void banner() {
         System.out.println("------------------------------------------------------");
     }
 
     /** Prints Loki's greeting. */
-    public static void greeting() {
+    public void greeting() {
         printHeavyDialogue(
             "Greetings, mortal",
             "Loki the Trickster God at your service"
@@ -55,58 +73,58 @@ public class LokiUi {
     }
 
     /** Prints a randomly selected farewell. */
-    public static void exit() {
+    public void exit() {
         printHeavyDialogue(pickRandom(FAREWELLS));
     }
 
     /** Prints a response to a user's input. */
-    public static void echo(String text) {
+    public void echo(String text) {
         printDialogue(text);
     }
 
     /** Prints a randomly selected response for an invalid task index. */
-    public static void youarestupid() {
+    public void youarestupid() {
         printDialogue(pickRandom(INVALID_TASK_RESPONSES));
     }
 
     /** Prints a temporary response for an unrecognised command. */
-    public static void notUnderstanding() {
+    public void notUnderstanding() {
         printDialogue(pickRandom(LOKIEXCEPTION));
     }
 
-    /** Prints an input error. */
-    public static void error(String message) {
+    /** Prints an input or storage error. */
+    public void error(String message) {
         printDialogue(message);
     }
 
-    /** Prints a randomly selected response for a successful task update. */
-    public static void obedient(String task) {
+    /** Prints a randomly selected response to a successful task operation. */
+    public void obedient(String task) {
         printDialogue(pickRandom(VALID_TASK_RESPONSES) + "\n          " + task);
     }
 
     /** Prints all tasks in their one-based list order. */
-    public static void listTasks(List<Task> tasks) {
+    public void listTasks(TaskList tasks) {
         banner();
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(String.format("      %s. %s", i + 1, tasks.get(i)));
+        for (int i = 1; i <= tasks.size(); i++) {
+            System.out.println(String.format("      %s. %s", i, tasks.getUnchecked(i)));
         }
         System.out.println("");
     }
 
     /** Prints the response after a task is added. */
-    public static void taskAdded(Task task, int taskCount) {
+    public void taskAdded(Task task, int taskCount) {
         obedient(task.toString());
         taskCount(taskCount);
     }
 
     /** Prints the response after a task is deleted. */
-    public static void taskDeleted(Task task, int taskCount) {
+    public void taskDeleted(Task task, int taskCount) {
         obedient(task.toString());
         taskCount(taskCount);
     }
 
     /** Prints the number of tasks remaining. */
-    public static void taskCount(int taskCount) {
+    public void taskCount(int taskCount) {
         echo(String.format("You have %s tasks left to conquer.", taskCount));
     }
 
@@ -115,8 +133,12 @@ public class LokiUi {
         return "Loki error: " + pickRandom(LOKIEXCEPTION);
     }
 
-    /** Prints one or more dialogue lines using the normal banner format. */
-    private static void printDialogue(String... lines) {
+    @Override
+    public void close() {
+        scanner.close();
+    }
+
+    private void printDialogue(String... lines) {
         banner();
         for (String line : lines) {
             System.out.println(DIALOGUE_INDENT + line);
@@ -124,8 +146,7 @@ public class LokiUi {
         banner();
     }
 
-    /** Prints one or more dialogue lines using the heavy banner format. */
-    private static void printHeavyDialogue(String... lines) {
+    private void printHeavyDialogue(String... lines) {
         bannerHeavy();
         for (String line : lines) {
             System.out.println(DIALOGUE_INDENT + line);
@@ -133,12 +154,10 @@ public class LokiUi {
         bannerHeavy();
     }
 
-    /** Selects one item from a collection of dialogue choices. */
     private static String pickRandom(String[] choices) {
         return choices[MISCHIEF.nextInt(choices.length)];
     }
 
-    /** Loads dialogue entries separated by a standalone plus sign. */
     private static String[] loadDialogue(String filename) {
         try {
             String content = Files.readString(resolveAsset(filename));
@@ -154,7 +173,6 @@ public class LokiUi {
         }
     }
 
-    /** Resolves an asset from the working directory or the source asset folder. */
     private static Path resolveAsset(String filename) {
         Path workingDirectoryAsset = Path.of(filename);
         if (Files.exists(workingDirectoryAsset)) {

@@ -2,18 +2,18 @@
  * Represents recoverable errors caused by invalid user input.
  *
  * <p>Each instance receives a randomly selected flavour message from
- * {@link LokiUi#randomExceptionMessage()}.</p>
+ * {@link Ui#randomExceptionMessage()}.</p>
  */
 public class LokiExceptions extends Exception {
     /**
      * Creates an input error with a randomly selected Loki message.
      */
     public LokiExceptions() {
-        super(LokiUi.randomExceptionMessage());
+        super(Ui.randomExceptionMessage());
     }
 
     public LokiExceptions(String message) {
-        super(LokiUi.randomExceptionMessage() + "\n" + message);
+        super(Ui.randomExceptionMessage() + "\n" + message);
     }
 
     /**
