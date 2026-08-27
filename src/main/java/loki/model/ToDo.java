@@ -1,3 +1,5 @@
+package loki.model;
+
 /**
  * A task that does not have a deadline or scheduled time.
  */

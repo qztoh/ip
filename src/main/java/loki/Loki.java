@@ -1,4 +1,13 @@
+package loki;
+
 import java.io.IOException;
+
+import loki.exception.LokiExceptions;
+import loki.model.Task;
+import loki.model.TaskList;
+import loki.parser.Parser;
+import loki.storage.Storage;
+import loki.ui.Ui;
 
 /**
  * Coordinates user interaction, command parsing, task operations, and storage.

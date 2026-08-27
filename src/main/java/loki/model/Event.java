@@ -1,4 +1,8 @@
+package loki.model;
+
 import java.time.LocalDateTime;
+
+import loki.parser.DateTimeParser;
 
 /**
  * A task scheduled between a specific start time and end time.

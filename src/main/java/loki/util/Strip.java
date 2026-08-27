@@ -1,3 +1,5 @@
+package loki.util;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5,7 +7,7 @@ import java.nio.file.Path;
 /**
  * Replaces zero characters with spaces in every line of a pasted string.
  */
-public class strip {
+public class Strip {
     /*
      * Paste the string to process between the triple quotation marks.
      * Keep the opening and closing quotation marks on their own lines.

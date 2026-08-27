@@ -1,3 +1,7 @@
+package loki.exception;
+
+import loki.ui.Ui;
+
 /**
  * Represents recoverable errors caused by invalid user input.
  *

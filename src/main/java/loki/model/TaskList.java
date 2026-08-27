@@ -1,7 +1,11 @@
+package loki.model;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import loki.exception.LokiExceptions;
 
 /**
  * Owns the application's tasks and operations on their one-based indices.
@@ -34,11 +38,6 @@ public class TaskList implements Iterable<Task> {
      */
     public Task get(int oneBasedIndex) throws LokiExceptions {
         validateIndex(oneBasedIndex);
-        return tasks.get(oneBasedIndex - 1);
-    }
-
-    /** Returns a task using a validated one-based index for UI display. */
-    Task getUnchecked(int oneBasedIndex) {
         return tasks.get(oneBasedIndex - 1);
     }
 

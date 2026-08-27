@@ -1,4 +1,8 @@
+package loki.model;
+
 import java.time.LocalDateTime;
+
+import loki.parser.DateTimeParser;
 
 /**
  * A task that must be completed before a specified time.
