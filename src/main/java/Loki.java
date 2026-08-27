@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,25 +7,21 @@ import java.util.Scanner;
  */
 public class Loki {
     private static final ArrayList<Task> tasks = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
-        String splash = "|        ____   |   / |____|\n"
-                + "|       /    \\  |  /     |  \n"
-                + "|       |    |  |<       |  \n"
-                + "|       \\    /  |  \\     |  \n"
-                + "|_______ \\__/   |   \\ |____|\n";
-
-        Path pathLoki = Path.of("loki.txt");
-        String logo = Files.readString(pathLoki);
-
-        LokiDialogue.banner();
-        System.out.println(splash);
-        System.out.println(logo);
-        LokiDialogue.greeting();
-
         Scanner scanner = new Scanner(System.in);
+        Storage storage = new Storage();
+        tasks.clear();
+        try {
+            tasks.addAll(storage.load());
+        } catch (LokiExceptions exception) {
+            LokiUi.error(exception.getMessage());
+            scanner.close();
+            return;
+        }
         boolean activeSession = true;
-
-        while (activeSession) {
+        LokiUi.showWelcome();
+        while (activeSession && scanner.hasNextLine()) {
             String input = scanner.nextLine();
             try {
                 String trimmedInput = input.trim();
@@ -40,14 +34,15 @@ public class Loki {
                 switch (keyword) {
                 case "faretheewell":
                 case "exit":
+                    storage.save(tasks);
                     activeSession = false;
-                    LokiDialogue.exit();
+                    LokiUi.exit();
                     break;
                 case "list":
                     if (tasks.isEmpty()) {
-                        LokiDialogue.echo("You lack any tasks");
+                        LokiUi.echo("You lack any tasks");
                     } else {
-                        listTasks();
+                        LokiUi.listTasks(tasks);
                     }
                     break;
                 case "mark":
@@ -61,19 +56,17 @@ public class Loki {
                 case "event":
                     Task task = createTask(input);
                     add(task);
-                    LokiDialogue.obedient(task.toString());
-                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
+                    LokiUi.taskAdded(task, tasks.size());
                     break;
                 case "delete":
                     Task deletedTask = deleteTask(words);
-                    LokiDialogue.obedient(deletedTask.toString());
-                    LokiDialogue.echo(String.format("You have %s tasks left to conquer.", tasks.size()));
+                    LokiUi.taskDeleted(deletedTask, tasks.size());
                     break;
                 default:
                     throw LokiExceptions.unknownCommand();
                 }
-            } catch (LokiExceptions exception) {
-                LokiDialogue.error(exception.getMessage());
+            } catch (LokiExceptions | IllegalArgumentException exception) {
+                LokiUi.error(exception.getMessage());
             }
         }
         scanner.close();
@@ -164,7 +157,7 @@ public class Loki {
         } else {
             task.unmarkDone();
         }
-        LokiDialogue.obedient(task.toString());
+        LokiUi.obedient(task.toString());
     }
 
     /**
@@ -182,7 +175,7 @@ public class Loki {
      * Converts a one-based task number from user input to an ArrayList index.
      */
     private static int taskIndexFrom(String[] words) throws LokiExceptions {
-        if (words.length < 2) {
+        if (words.length != 2) {
             throw LokiExceptions.invalidTaskNumber();
         }
 
@@ -199,11 +192,4 @@ public class Loki {
         return taskIndex;
     }
 
-    private static void listTasks() {
-        LokiDialogue.banner();
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(String.format("      %s. %s", i + 1, tasks.get(i)));
-        }
-        System.out.println("");
-    }
 }

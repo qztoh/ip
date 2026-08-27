@@ -12,7 +12,17 @@ public class Deadline extends Task {
      */
     public Deadline(String title, String due) {
         super(title);
-        this.due = due;
+        this.due = validateStorageField(due, "Deadline");
+    }
+    
+    public Deadline(String title, boolean done, String due) {
+        super(title, done);
+        this.due = validateStorageField(due, "Deadline");
+    }
+
+    public Deadline(String title, int done, String due) {
+        super(title, done);
+        this.due = validateStorageField(due, "Deadline");
     }
 
     /**
@@ -23,5 +33,16 @@ public class Deadline extends Task {
     @Override
     public String toString() {
         return String.format("[D]%s (by: %s)", super.toString(), this.due);
+    }
+
+    /**
+     * Converts this deadline task into the storage format.
+     *
+     * @return the serialized deadline task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("D | %d | %s | %s", status, getTitle(), due);
     }
 }

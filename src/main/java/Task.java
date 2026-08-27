@@ -1,7 +1,7 @@
 /**
  * Represents one task entered by the user.
  */
-public class Task {
+public abstract class Task {
     private final String title;
     private boolean done;
 
@@ -11,8 +11,38 @@ public class Task {
      * @param title the task description
      */
     public Task(String title) {
-        this.title = title;
+        this.title = validateStorageField(title, "Task title");
         this.done = false;
+    }
+
+    public Task(String title, boolean done) {
+        this.title = validateStorageField(title, "Task title");
+        this.done = done;
+    }
+
+    public Task(String title, int done) {
+        this.title = validateStorageField(title, "Task title");
+        if (done != 0 && done != 1) {
+            throw new IllegalArgumentException("Task status must be 0 or 1");
+        }
+        this.done = done == 1;
+    }
+
+    /**
+     * Validates a value that will be stored in the pipe-delimited file.
+     *
+     * @param value the value to validate
+     * @param fieldName the name used in the error message
+     * @return the unchanged valid value
+     */
+    protected static String validateStorageField(String value, String fieldName) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty");
+        }
+        if (value.indexOf('|') >= 0 || value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0) {
+            throw new IllegalArgumentException(fieldName + " contains an invalid storage character");
+        }
+        return value;
     }
 
     /**
@@ -39,6 +69,15 @@ public class Task {
     }
 
     /**
+     * Returns the task title for use by subclasses when serializing the task.
+     *
+     * @return the task title
+     */
+    protected String getTitle() {
+        return title;
+    }
+
+    /**
      * Formats the task with a completion indicator.
      *
      * @return the task's display text
@@ -48,4 +87,11 @@ public class Task {
         String status = done ? "X" : " ";
         return "[" + status + "] " + title;
     }
+
+    /**
+     * Converts this task into its storage format.
+     *
+     * @return the serialized task
+     */
+    public abstract String saveString();
 }

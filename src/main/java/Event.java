@@ -14,8 +14,20 @@ public class Event extends Task {
      */
     public Event(String title, String from, String to) {
         super(title);
-        this.from = from;
-        this.to = to;
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
+    }
+    
+    public Event(String title, boolean done, String from, String to) {
+        super(title, done);
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
+    }
+
+    public Event(String title, int done, String from, String to) {
+        super(title, done);
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
     }
 
     /**
@@ -26,5 +38,16 @@ public class Event extends Task {
     @Override
     public String toString() {
         return String.format("[E]%s (from: %s to: %s)", super.toString(), from, to);
+    }
+
+    /**
+     * Converts this event task into the storage format.
+     *
+     * @return the serialized event task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("E | %d | %s | %s-%s", status, getTitle(), from, to);
     }
 }

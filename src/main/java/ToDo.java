@@ -11,6 +11,14 @@ public class ToDo extends Task {
         super(title);
     }
 
+    public ToDo(String title, boolean done) {
+        super(title, done);
+    }
+    
+    public ToDo(String title, int done) {
+        super(title, done);
+    }
+
     /**
      * Formats this task with the to-do task type marker.
      *
@@ -19,5 +27,16 @@ public class ToDo extends Task {
     @Override
     public String toString() {
         return "[T]" + super.toString();
+    }
+
+    /**
+     * Converts this to-do task into the storage format.
+     *
+     * @return the serialized to-do task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("T | %d | %s", status, getTitle());
     }
 }
