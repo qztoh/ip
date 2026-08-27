@@ -11,6 +11,14 @@ public class ToDo extends Task {
         super(title);
     }
 
+    public ToDo(String title, boolean done) {
+        super(title, done);
+    }
+    
+    public ToDo(String title, int done) {
+        super(title, done);
+    }
+
     /**
      * Formats this task with the to-do task type marker.
      *

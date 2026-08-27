@@ -14,6 +14,16 @@ public class Deadline extends Task {
         super(title);
         this.due = due;
     }
+    
+    public Deadline(String title, boolean done, String due) {
+        super(title, done);
+        this.due = due;
+    }
+
+    public Deadline(String title, int done, String due) {
+        super(title, done);
+        this.due = due;
+    }
 
     /**
      * Formats this task with its deadline.

@@ -15,6 +15,16 @@ public abstract class Task {
         this.done = false;
     }
 
+    public Task(String title, boolean done) {
+        this.title = title;
+        this.done = done;
+    }
+
+    public Task(String title, int done) {
+        this.title = title;
+        this.done = done == 1;
+    }
+
     /**
      * Returns whether this task has been completed.
      *

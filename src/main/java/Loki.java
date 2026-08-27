@@ -9,9 +9,14 @@ public class Loki {
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        Storage storage = new Storage();
         Scanner scanner = new Scanner(System.in);
-        
+        Storage storage = new Storage();
+        try {
+            tasks.addAll(storage.load());
+        } catch (LokiExceptions exception) {
+            LokiUi.error(exception.getMessage());
+            return;
+        }
         boolean activeSession = true;
         LokiUi.showWelcome();
         while (activeSession) {

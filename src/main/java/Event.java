@@ -17,6 +17,18 @@ public class Event extends Task {
         this.from = from;
         this.to = to;
     }
+    
+    public Event(String title, boolean done, String from, String to) {
+        super(title, done);
+        this.from = from;
+        this.to = to;
+    }
+
+    public Event(String title, int done, String from, String to) {
+        super(title, done);
+        this.from = from;
+        this.to = to;
+    }
 
     /**
      * Formats this task with its start and end times.
