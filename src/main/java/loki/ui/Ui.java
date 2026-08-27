@@ -1,8 +1,14 @@
+package loki.ui;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 import java.util.Scanner;
+
+import loki.exception.LokiExceptions;
+import loki.model.Task;
+import loki.model.TaskList;
 
 /**
  * Handles interaction with the user, including input and console output.
@@ -103,10 +109,10 @@ public class Ui implements AutoCloseable {
     }
 
     /** Prints all tasks in their one-based list order. */
-    public void listTasks(TaskList tasks) {
+    public void listTasks(TaskList tasks) throws LokiExceptions {
         banner();
         for (int i = 1; i <= tasks.size(); i++) {
-            System.out.println(String.format("      %s. %s", i, tasks.getUnchecked(i)));
+            System.out.println(String.format("      %s. %s", i, tasks.get(i)));
         }
         System.out.println("");
     }

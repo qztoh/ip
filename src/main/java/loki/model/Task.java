@@ -1,3 +1,5 @@
+package loki.model;
+
 /**
  * Represents one task entered by the user.
  */
