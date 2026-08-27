@@ -20,4 +20,15 @@ public class ToDo extends Task {
     public String toString() {
         return "[T]" + super.toString();
     }
+
+    /**
+     * Converts this to-do task into the storage format.
+     *
+     * @return the serialized to-do task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("T | %d | %s", status, getTitle());
+    }
 }

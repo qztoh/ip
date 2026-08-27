@@ -9,11 +9,11 @@ public class Loki {
     private static final ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        LokiUi.showWelcome();
-
+        Storage storage = new Storage();
         Scanner scanner = new Scanner(System.in);
+        
         boolean activeSession = true;
-
+        LokiUi.showWelcome();
         while (activeSession) {
             String input = scanner.nextLine();
             try {
@@ -27,6 +27,7 @@ public class Loki {
                 switch (keyword) {
                 case "faretheewell":
                 case "exit":
+                    storage.save(tasks);
                     activeSession = false;
                     LokiUi.exit();
                     break;

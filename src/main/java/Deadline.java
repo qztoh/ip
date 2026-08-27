@@ -24,4 +24,15 @@ public class Deadline extends Task {
     public String toString() {
         return String.format("[D]%s (by: %s)", super.toString(), this.due);
     }
+
+    /**
+     * Converts this deadline task into the storage format.
+     *
+     * @return the serialized deadline task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("D | %d | %s | %s", status, getTitle(), due);
+    }
 }

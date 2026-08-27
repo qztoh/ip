@@ -12,6 +12,10 @@ public class LokiExceptions extends Exception {
         super(LokiUi.randomExceptionMessage());
     }
 
+    public LokiExceptions(String message) {
+        super(LokiUi.randomExceptionMessage() + "\n" + message);
+    }
+
     /**
      * Creates an error for an empty command.
      *

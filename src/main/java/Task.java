@@ -1,7 +1,7 @@
 /**
  * Represents one task entered by the user.
  */
-public class Task {
+public abstract class Task {
     private final String title;
     private boolean done;
 
@@ -39,6 +39,15 @@ public class Task {
     }
 
     /**
+     * Returns the task title for use by subclasses when serializing the task.
+     *
+     * @return the task title
+     */
+    protected String getTitle() {
+        return title;
+    }
+
+    /**
      * Formats the task with a completion indicator.
      *
      * @return the task's display text
@@ -48,4 +57,11 @@ public class Task {
         String status = done ? "X" : " ";
         return "[" + status + "] " + title;
     }
+
+    /**
+     * Converts this task into its storage format.
+     *
+     * @return the serialized task
+     */
+    public abstract String saveString();
 }

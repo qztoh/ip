@@ -27,4 +27,15 @@ public class Event extends Task {
     public String toString() {
         return String.format("[E]%s (from: %s to: %s)", super.toString(), from, to);
     }
+
+    /**
+     * Converts this event task into the storage format.
+     *
+     * @return the serialized event task
+     */
+    @Override
+    public String saveString() {
+        int status = isDone() ? 1 : 0;
+        return String.format("E | %d | %s | %s-%s", status, getTitle(), from, to);
+    }
 }
