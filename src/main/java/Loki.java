@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,38 +33,38 @@ public class Loki {
                 String[] words = trimmedInput.split("\\s+");
                 String keyword = words[0].toLowerCase();
                 switch (keyword) {
-                case "faretheewell":
-                case "exit":
-                    storage.save(tasks);
-                    activeSession = false;
-                    LokiUi.exit();
-                    break;
-                case "list":
-                    if (tasks.isEmpty()) {
-                        LokiUi.echo("You lack any tasks");
-                    } else {
-                        LokiUi.listTasks(tasks);
-                    }
-                    break;
-                case "mark":
-                    updateTaskStatus(words, true);
-                    break;
-                case "unmark":
-                    updateTaskStatus(words, false);
-                    break;
-                case "todo":
-                case "deadline":
-                case "event":
-                    Task task = createTask(input);
-                    add(task);
-                    LokiUi.taskAdded(task, tasks.size());
-                    break;
-                case "delete":
-                    Task deletedTask = deleteTask(words);
-                    LokiUi.taskDeleted(deletedTask, tasks.size());
-                    break;
-                default:
-                    throw LokiExceptions.unknownCommand();
+                    case "faretheewell":
+                    case "exit":
+                        storage.save(tasks);
+                        activeSession = false;
+                        LokiUi.exit();
+                        break;
+                    case "list":
+                        if (tasks.isEmpty()) {
+                            LokiUi.echo("You lack any tasks");
+                        } else {
+                            LokiUi.listTasks(tasks);
+                        }
+                        break;
+                    case "mark":
+                        updateTaskStatus(words, true);
+                        break;
+                    case "unmark":
+                        updateTaskStatus(words, false);
+                        break;
+                    case "todo":
+                    case "deadline":
+                    case "event":
+                        Task task = createTask(input);
+                        add(task);
+                        LokiUi.taskAdded(task, tasks.size());
+                        break;
+                    case "delete":
+                        Task deletedTask = deleteTask(words);
+                        LokiUi.taskDeleted(deletedTask, tasks.size());
+                        break;
+                    default:
+                        throw LokiExceptions.unknownCommand();
                 }
             } catch (LokiExceptions | IllegalArgumentException exception) {
                 LokiUi.error(exception.getMessage());
@@ -118,7 +119,12 @@ public class Loki {
         if (title.isEmpty() || due.isEmpty()) {
             throw LokiExceptions.invalidDeadline();
         }
-        return new Deadline(title, due);
+        try {
+            LocalDateTime deadline = DateTimeParser.parseUserInput(due);
+            return new Deadline(title, deadline);
+        } catch (IllegalArgumentException exception) {
+            throw LokiExceptions.invalidDeadline();
+        }
     }
 
     /**
@@ -139,7 +145,13 @@ public class Loki {
         if (title.isEmpty() || from.isEmpty() || to.isEmpty()) {
             throw LokiExceptions.invalidEvent();
         }
-        return new Event(title, from, to);
+        try {
+            LocalDateTime start = DateTimeParser.parseUserInput(from);
+            LocalDateTime end = DateTimeParser.parseUserInput(to);
+            return new Event(title, start, end);
+        } catch (IllegalArgumentException exception) {
+            throw LokiExceptions.invalidEvent();
+        }
     }
 
     /**

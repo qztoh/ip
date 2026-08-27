@@ -4,6 +4,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,33 +54,43 @@ public class Storage {
         // D | 0 | two | later
         // E | 0 | three | now-forever
         return switch (type) {
-        case "T" -> {
-            requireFieldCount(fields, 3);
-            yield new ToDo(title, done);
-        }
-        case "D" -> {
-            requireFieldCount(fields, 4);
-            String due = fields[3].trim();
-            if (due.isEmpty()) {
-                throw new LokiExceptions("Deadline cannot be empty");
+            case "T" -> {
+                requireFieldCount(fields, 3);
+                yield new ToDo(title, done);
             }
-            yield new Deadline(title, done, due);
-        }
-        case "E" -> {
-            requireFieldCount(fields, 4);
-            String schedule = fields[3].trim();
-            int separator = schedule.lastIndexOf('-');
-            if (separator <= 0 || separator >= schedule.length() - 1) {
-                throw new LokiExceptions("Invalid event time format");
+            case "D" -> {
+                requireFieldCount(fields, 4);
+                String due = fields[3].trim();
+                if (due.isEmpty()) {
+                    throw new LokiExceptions("Deadline cannot be empty");
+                }
+                try {
+                    yield new Deadline(title, done, DateTimeParser.parseStored(due));
+                } catch (IllegalArgumentException exception) {
+                    throw new LokiExceptions("Invalid deadline date/time");
+                }
             }
-            String from = schedule.substring(0, separator).trim();
-            String to = schedule.substring(separator + 1).trim();
-            if (from.isEmpty() || to.isEmpty()) {
-                throw new LokiExceptions("Invalid event time format");
+            case "E" -> {
+                requireFieldCount(fields, 4);
+                String schedule = fields[3].trim();
+                int separator = schedule.indexOf("->");
+                if (separator <= 0 || separator >= schedule.length() - 2) {
+                    throw new LokiExceptions("Invalid event time format");
+                }
+                String from = schedule.substring(0, separator).trim();
+                String to = schedule.substring(separator + 2).trim();
+                if (from.isEmpty() || to.isEmpty()) {
+                    throw new LokiExceptions("Invalid event time format");
+                }
+                try {
+                    LocalDateTime start = DateTimeParser.parseStored(from);
+                    LocalDateTime end = DateTimeParser.parseStored(to);
+                    yield new Event(title, done, start, end);
+                } catch (IllegalArgumentException exception) {
+                    throw new LokiExceptions("Invalid event date/time");
+                }
             }
-            yield new Event(title, done, from, to);
-        }
-        default -> throw new LokiExceptions("Unknown Task type; Is your file corrupted?");
+            default -> throw new LokiExceptions("Unknown Task type; Is your file corrupted?");
         };
 
     }
