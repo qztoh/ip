@@ -4,7 +4,7 @@ Run this plan from the repository root with Java 25.
 
 - Program: `java -cp _temp/ui-classes Loki`
 - Working directory: `.`
-- Setup: `javac -d _temp/ui-classes src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java src/main/java/Storage.java src/main/java/LokiUi.java src/main/java/LokiExceptions.java src/main/java/Loki.java`
+- Setup: `javac -d _temp/ui-classes src/main/java/Task.java src/main/java/ToDo.java src/main/java/Deadline.java src/main/java/Event.java src/main/java/DateTimeParser.java src/main/java/Storage.java src/main/java/LokiUi.java src/main/java/LokiExceptions.java src/main/java/Loki.java`
 
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 
@@ -106,7 +106,7 @@ Verify that a `/by` marker creates a deadline task and preserves its deadline te
 ### Inputs
 
 ```text
-deadline Return book /by June 6th
+deadline Return book /by 2019-06-06
 list
 exit
 ```
@@ -114,7 +114,7 @@ exit
 ### Expected output
 
 ```text
-[D][ ] Return book (by: June 6th)
+[D][ ] Return book (by: Jun 06 2019)
 You have 1 tasks left to conquer.
 ```
 
@@ -127,7 +127,7 @@ Verify that `/from` and `/to` markers create an event task with both times.
 ### Inputs
 
 ```text
-event Project meeting /from Aug 6th 2pm /to 4pm
+event Project meeting /from 2019-08-06 1400 /to 2019-08-06 1600
 list
 exit
 ```
@@ -135,7 +135,7 @@ exit
 ### Expected output
 
 ```text
-[E][ ] Project meeting (from: Aug 6th 2pm to: 4pm)
+[E][ ] Project meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)
 You have 1 tasks left to conquer.
 ```
 
@@ -265,8 +265,8 @@ Verify that different task subclasses can coexist and retain their individual me
 ### Inputs
 
 ```text
-deadline Submit report /by June 6th
-event Project meeting /from Aug 6th 2pm /to 4pm
+deadline Submit report /by 2019-06-06
+event Project meeting /from 2019-08-06 1400 /to 2019-08-06 1600
 list
 exit
 ```
@@ -274,8 +274,8 @@ exit
 ### Expected output
 
 ```text
-[D][ ] Submit report (by: June 6th)
-[E][ ] Project meeting (from: Aug 6th 2pm to: 4pm)
+[D][ ] Submit report (by: Jun 06 2019)
+[E][ ] Project meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)
 1. [D][ ] Submit report (by: June 6th)
 2. [E][ ] Project meeting (from: Aug 6th 2pm to: 4pm)
 ```
@@ -421,8 +421,8 @@ Verify that exiting after creating different task types saves successfully and d
 ```text
 todo read book
 mark 1
-deadline return book /by June 6th
-event project meeting /from Aug 6th 2 /to 4pm
+deadline return book /by 2019-06-06
+event project meeting /from 2019-08-06 1400 /to 2019-08-06 1600
 exit
 ```
 
@@ -431,6 +431,63 @@ exit
 ```text
 [T][ ] read book
 [T][X] read book
-[D][ ] return book (by: June 6th)
-[E][ ] project meeting (from: Aug 6th 2 to: 4pm)
+[D][ ] return book (by: Jun 06 2019)
+[E][ ] project meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)
+```
+
+## Test Case UI-020: Reject an impossible date
+
+### Aim
+
+Verify that a date containing an invalid calendar day is rejected without terminating the application.
+
+### Inputs
+
+```text
+deadline Return book /by 2019-02-30
+exit
+```
+
+### Expected output
+
+```text
+Loki error:
+```
+
+## Test Case UI-021: Reject a reversed event interval
+
+### Aim
+
+Verify that an event whose start occurs after its end is rejected.
+
+### Inputs
+
+```text
+event Project meeting /from 2019-08-06 1600 /to 2019-08-06 1400
+exit
+```
+
+### Expected output
+
+```text
+Loki error:
+```
+
+## Test Case UI-022: Parse day-first date and time input
+
+### Aim
+
+Verify that `2/12/2019 1800` is interpreted as 2 December 2019 at 6:00 PM.
+
+### Inputs
+
+```text
+deadline Return book /by 2/12/2019 1800
+exit
+```
+
+### Expected output
+
+```text
+[D][ ] Return book (by: Dec 02 2019, 6:00 PM)
 ```

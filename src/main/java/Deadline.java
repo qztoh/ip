@@ -1,8 +1,10 @@
+import java.time.LocalDateTime;
+
 /**
  * A task that must be completed before a specified time.
  */
 public class Deadline extends Task {
-    private final String due;
+    private final LocalDateTime due;
 
     /**
      * Creates a new unfinished deadline task.
@@ -11,18 +13,37 @@ public class Deadline extends Task {
      * @param due the deadline, kept in the user's display format
      */
     public Deadline(String title, String due) {
-        super(title);
-        this.due = validateStorageField(due, "Deadline");
+        this(title, DateTimeParser.parseUserInput(due));
     }
-    
+
+    public Deadline(String title, LocalDateTime due) {
+        super(title);
+        this.due = validateDateTime(due, "Deadline");
+    }
+
     public Deadline(String title, boolean done, String due) {
+        this(title, done, DateTimeParser.parseUserInput(due));
+    }
+
+    public Deadline(String title, boolean done, LocalDateTime due) {
         super(title, done);
-        this.due = validateStorageField(due, "Deadline");
+        this.due = validateDateTime(due, "Deadline");
     }
 
     public Deadline(String title, int done, String due) {
+        this(title, done, DateTimeParser.parseStored(due));
+    }
+
+    public Deadline(String title, int done, LocalDateTime due) {
         super(title, done);
-        this.due = validateStorageField(due, "Deadline");
+        this.due = validateDateTime(due, "Deadline");
+    }
+
+    private static LocalDateTime validateDateTime(LocalDateTime value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty");
+        }
+        return value;
     }
 
     /**
@@ -32,7 +53,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return String.format("[D]%s (by: %s)", super.toString(), this.due);
+        return String.format("[D]%s (by: %s)", super.toString(),
+                DateTimeParser.formatForDisplay(due));
     }
 
     /**
@@ -43,6 +65,7 @@ public class Deadline extends Task {
     @Override
     public String saveString() {
         int status = isDone() ? 1 : 0;
-        return String.format("D | %d | %s | %s", status, getTitle(), due);
+        return String.format("D | %d | %s | %s", status, getTitle(),
+                DateTimeParser.formatForStorage(due));
     }
 }
