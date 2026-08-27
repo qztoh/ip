@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,8 +109,8 @@ public class Storage {
     }
 
 
-    public ArrayList<Task> load() throws LokiExceptions {
-        ArrayList<Task> taskList = new ArrayList<>();
+    public TaskList load() throws LokiExceptions {
+        TaskList taskList = new TaskList();
         List<String> allTasks;
         try {
             allTasks = Files.readAllLines(workingDir, StandardCharsets.UTF_8);
@@ -130,7 +129,7 @@ public class Storage {
         return taskList;
     }
 
-    public void save(ArrayList<Task> taskList) throws LokiExceptions {
+    public void save(TaskList taskList) throws LokiExceptions {
         if (taskList == null) {
             throw new LokiExceptions("Task list cannot be null");
         }
