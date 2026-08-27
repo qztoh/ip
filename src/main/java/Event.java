@@ -14,20 +14,20 @@ public class Event extends Task {
      */
     public Event(String title, String from, String to) {
         super(title);
-        this.from = from;
-        this.to = to;
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
     }
     
     public Event(String title, boolean done, String from, String to) {
         super(title, done);
-        this.from = from;
-        this.to = to;
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
     }
 
     public Event(String title, int done, String from, String to) {
         super(title, done);
-        this.from = from;
-        this.to = to;
+        this.from = validateStorageField(from, "Event start time");
+        this.to = validateStorageField(to, "Event end time");
     }
 
     /**

@@ -12,17 +12,17 @@ public class Deadline extends Task {
      */
     public Deadline(String title, String due) {
         super(title);
-        this.due = due;
+        this.due = validateStorageField(due, "Deadline");
     }
     
     public Deadline(String title, boolean done, String due) {
         super(title, done);
-        this.due = due;
+        this.due = validateStorageField(due, "Deadline");
     }
 
     public Deadline(String title, int done, String due) {
         super(title, done);
-        this.due = due;
+        this.due = validateStorageField(due, "Deadline");
     }
 
     /**

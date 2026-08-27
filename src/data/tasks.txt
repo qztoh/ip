@@ -1,4 +1,1 @@
-T | 0 | one
-D | 0 | two | later
-E | 0 | three | now-forever
-T | 0 | wallahi
+T | 0 | this

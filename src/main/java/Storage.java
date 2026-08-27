@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.NoSuchFileException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,7 +15,14 @@ public class Storage {
     private final Path workingDir;
 
     public Storage(String filePath) {
-        this.workingDir = Path.of(filePath);
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("Storage path cannot be empty");
+        }
+        try {
+            this.workingDir = Path.of(filePath);
+        } catch (InvalidPathException exception) {
+            throw new IllegalArgumentException("Invalid storage path", exception);
+        }
     }
     
     public Storage() {
@@ -22,15 +31,19 @@ public class Storage {
 
 
     private Task taskify(String rawTask) throws LokiExceptions {
+        if (rawTask == null || rawTask.isBlank()) {
+            throw new LokiExceptions("Task record cannot be empty");
+        }
+
         String[] fields = rawTask.split("\\s*\\|\\s*", -1);
 
         if (fields.length < 3) {
             throw new LokiExceptions("Invalid task format");
         }
 
-        String type = fields[0];
-        int done = parseStatus(fields[1]);
-        String title = fields[2];
+        String type = fields[0].trim();
+        int done = parseStatus(fields[1].trim());
+        String title = fields[2].trim();
 
         if (title.isEmpty()) {
             throw new LokiExceptions("Task title cannot be empty");
@@ -46,15 +59,25 @@ public class Storage {
         }
         case "D" -> {
             requireFieldCount(fields, 4);
-            yield new Deadline(title, done, fields[3]);
+            String due = fields[3].trim();
+            if (due.isEmpty()) {
+                throw new LokiExceptions("Deadline cannot be empty");
+            }
+            yield new Deadline(title, done, due);
         }
         case "E" -> {
             requireFieldCount(fields, 4);
-            String[] times = fields[3].split("-", 2);
-            if (times.length != 2 || times[0].isEmpty() || times[1].isEmpty()) {
+            String schedule = fields[3].trim();
+            int separator = schedule.lastIndexOf('-');
+            if (separator <= 0 || separator >= schedule.length() - 1) {
                 throw new LokiExceptions("Invalid event time format");
             }
-            yield new Event(title, done, times[0], times[1]);
+            String from = schedule.substring(0, separator).trim();
+            String to = schedule.substring(separator + 1).trim();
+            if (from.isEmpty() || to.isEmpty()) {
+                throw new LokiExceptions("Invalid event time format");
+            }
+            yield new Event(title, done, from, to);
         }
         default -> throw new LokiExceptions("Unknown Task type; Is your file corrupted?");
         };
@@ -81,8 +104,9 @@ public class Storage {
         List<String> allTasks;
         try {
             allTasks = Files.readAllLines(workingDir, StandardCharsets.UTF_8);
-            
-        } catch (IOException e) {
+        } catch (NoSuchFileException exception) {
+            return taskList;
+        } catch (IOException | SecurityException exception) {
             throw new LokiExceptions("Invalid File Path");
         }
 
@@ -96,9 +120,21 @@ public class Storage {
     }
 
     public void save(ArrayList<Task> taskList) throws LokiExceptions {
+        if (taskList == null) {
+            throw new LokiExceptions("Task list cannot be null");
+        }
+
         StringBuilder tasks = new StringBuilder();
         for (Task task : taskList) {
-            tasks.append(task.saveString());
+            if (task == null) {
+                throw new LokiExceptions("Task list cannot contain null tasks");
+            }
+            String serializedTask = task.saveString();
+            if (serializedTask == null || serializedTask.isBlank()
+                    || serializedTask.indexOf('\n') >= 0 || serializedTask.indexOf('\r') >= 0) {
+                throw new LokiExceptions("Task has an invalid storage format");
+            }
+            tasks.append(serializedTask);
             tasks.append("\n");   
         }
         try {
@@ -106,8 +142,8 @@ public class Storage {
             if (parent != null) {
                 Files.createDirectories(parent);
             }
-            Files.write(workingDir, tasks.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
+            Files.writeString(workingDir, tasks.toString(), StandardCharsets.UTF_8);
+        } catch (IOException | SecurityException exception) {
             throw new LokiExceptions("Unable to save file");
         }
         

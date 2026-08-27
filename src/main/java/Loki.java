@@ -11,15 +11,17 @@ public class Loki {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
+        tasks.clear();
         try {
             tasks.addAll(storage.load());
         } catch (LokiExceptions exception) {
             LokiUi.error(exception.getMessage());
+            scanner.close();
             return;
         }
         boolean activeSession = true;
         LokiUi.showWelcome();
-        while (activeSession) {
+        while (activeSession && scanner.hasNextLine()) {
             String input = scanner.nextLine();
             try {
                 String trimmedInput = input.trim();
@@ -63,7 +65,7 @@ public class Loki {
                 default:
                     throw LokiExceptions.unknownCommand();
                 }
-            } catch (LokiExceptions exception) {
+            } catch (LokiExceptions | IllegalArgumentException exception) {
                 LokiUi.error(exception.getMessage());
             }
         }
@@ -173,7 +175,7 @@ public class Loki {
      * Converts a one-based task number from user input to an ArrayList index.
      */
     private static int taskIndexFrom(String[] words) throws LokiExceptions {
-        if (words.length < 2) {
+        if (words.length != 2) {
             throw LokiExceptions.invalidTaskNumber();
         }
 
