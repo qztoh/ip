@@ -20,23 +20,23 @@ public class Ui implements AutoCloseable {
             + "|       |    |  |<       |  \n"
             + "|       \\    /  |  \\ |  \n"
             + "|_______ \\__/   |   \\ |____|\n";
-    private static final Random MISCHIEF = new Random();
+    private static final Random RANDOM_GENERATOR = new Random();
     private static final String[] FAREWELLS = loadDialogue("farewells.txt");
     private static final String[] INVALID_TASK_RESPONSES = loadDialogue("invalid-task-responses.txt");
     private static final String[] VALID_TASK_RESPONSES = loadDialogue("valid-task-responses.txt");
-    private static final String[] LOKIEXCEPTION = loadDialogue("loki-exceptions.txt");
+    private static final String[] LOKI_EXCEPTION_MESSAGES = loadDialogue("loki-exceptions.txt");
 
     private final Scanner scanner;
 
     /** Creates a UI that reads commands from standard input. */
     public Ui() {
-        scanner = new java.util.Scanner(System.in);
+        scanner = new Scanner(System.in);
     }
 
     /**
      * Returns whether another command is available.
      *
-     * @return true if another input line is available
+     * @return true if another input line is available.
      */
     public boolean hasNextLine() {
         return scanner.hasNextLine();
@@ -45,7 +45,7 @@ public class Ui implements AutoCloseable {
     /**
      * Reads the next command line.
      *
-     * @return the next input line
+     * @return the next input line.
      */
     public String readLine() {
         return scanner.nextLine();
@@ -58,10 +58,10 @@ public class Ui implements AutoCloseable {
      */
     public void showWelcome() throws IOException {
         String logo = Files.readString(resolveAsset("loki.txt"));
-        banner();
+        showBanner();
         System.out.println(SPLASH);
         System.out.println(logo);
-        greeting();
+        showGreeting();
     }
 
     /** Prints a heavy divider to standard output. */
@@ -75,7 +75,7 @@ public class Ui implements AutoCloseable {
     }
 
     /** Prints Loki's greeting. */
-    public void greeting() {
+    public void showGreeting() {
         printHeavyDialogue(
             "Greetings, mortal",
             "Loki the Trickster God at your service"
@@ -97,13 +97,13 @@ public class Ui implements AutoCloseable {
     }
 
     /** Prints a randomly selected response for an invalid task index. */
-    public void youarestupid() {
+    public void showInvalidTaskResponse() {
         printDialogue(pickRandom(INVALID_TASK_RESPONSES));
     }
 
-    /** Prints a temporary response for an unrecognised command. */
-    public void notUnderstanding() {
-        printDialogue(pickRandom(LOKIEXCEPTION));
+    /** Prints a temporary response for an unrecognized command. */
+    public void showUnknownCommandResponse() {
+        printDialogue(pickRandom(LOKI_EXCEPTION_MESSAGES));
     }
 
     /**
@@ -135,7 +135,7 @@ public class Ui implements AutoCloseable {
         for (int i = 1; i <= tasks.size(); i++) {
             System.out.println(String.format("      %s. %s", i, tasks.get(i)));
         }
-        System.out.println("");
+        System.out.println();
     }
 
     /**
@@ -179,6 +179,7 @@ public class Ui implements AutoCloseable {
     }
 
     /** Closes the scanner used for command input. */
+    /** Closes the scanner used for command input. */
     @Override
     public void close() {
         scanner.close();
@@ -190,11 +191,11 @@ public class Ui implements AutoCloseable {
      * @param lines the dialogue lines to print
      */
     private void printDialogue(String... lines) {
-        banner();
+        showBanner();
         for (String line : lines) {
             System.out.println(DIALOGUE_INDENT + line);
         }
-        banner();
+        showBanner();
     }
 
     /**
@@ -203,11 +204,11 @@ public class Ui implements AutoCloseable {
      * @param lines the dialogue lines to print
      */
     private void printHeavyDialogue(String... lines) {
-        bannerHeavy();
+        showHeavyBanner();
         for (String line : lines) {
             System.out.println(DIALOGUE_INDENT + line);
         }
-        bannerHeavy();
+        showHeavyBanner();
     }
 
     /**
@@ -217,7 +218,7 @@ public class Ui implements AutoCloseable {
      * @return one randomly selected response
      */
     private static String pickRandom(String[] choices) {
-        return choices[MISCHIEF.nextInt(choices.length)];
+        return choices[RANDOM_GENERATOR.nextInt(choices.length)];
     }
 
     /**

@@ -24,6 +24,10 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 # Project-specific requirements
 
+## Java coding standard
+
+All Java code in this project, including tests and future changes, must follow the project-specific `seedu-java-coding-standard` skill at `.codex/skills/seedu-java-coding-standard/SKILL.md`. Read and apply that skill before editing Java. In particular, use lowercase packages, PascalCase class names, camelCase methods and variables, SCREAMING_SNAKE_CASE constants, four-space indentation, K&R braces, explicit imports, a 120-character hard line limit, braces around all control-flow bodies, and descriptive public JavaDoc using American English.
+
 ## Java version:
 
 Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
@@ -41,6 +45,8 @@ After every code update:
 Maintain JUnit tests for approximately the top 50% of methods, prioritizing complex, core, or business-critical logic. After every code change, review and update the relevant JUnit tests so they remain aligned with the implementation and continue to meet this coverage target.
 
 ## Git
+
+All future commits and branch names must follow the project-specific `seedu-git-standard` skill at `.codex/skills/seedu-git-standard/SKILL.md`, based on the [SE-EDU Git conventions](https://se-education.org/guides/conventions/git.html). Read and apply it before preparing a commit. Commit subjects must be imperative, capitalized, concise, and have no trailing period; non-trivial commits need a 72-column body explaining what and why; branch names must be meaningful kebab-case names, using the issue-number format when applicable.
 
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.

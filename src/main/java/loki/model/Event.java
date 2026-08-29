@@ -14,9 +14,9 @@ public class Event extends Task {
     /**
      * Creates a new unfinished event task.
      *
-     * @param title the event description
-     * @param from the event start time, kept in the user's display format
-     * @param to the event end time, kept in the user's display format
+     * @param title the event description.
+     * @param from the event start time, kept in the user's display format.
+     * @param to the event end time, kept in the user's display format.
      */
     public Event(String title, String from, String to) {
         this(title, DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
@@ -117,7 +117,7 @@ public class Event extends Task {
     /**
      * Formats this task with its start and end times.
      *
-     * @return the formatted event task
+     * @return the formatted event task.
      */
     @Override
     public String toString() {
@@ -128,7 +128,7 @@ public class Event extends Task {
     /**
      * Converts this event task into the storage format.
      *
-     * @return the serialized event task
+     * @return the serialized event task.
      */
     @Override
     public String saveString() {

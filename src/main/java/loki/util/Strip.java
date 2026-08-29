@@ -12,6 +12,10 @@ public class Strip {
     public Strip() {
     }
 
+    /** Creates a utility instance for stripping zero characters. */
+    public Strip() {
+    }
+
     /*
      * Paste the string to process between the triple quotation marks.
      * Keep the opening and closing quotation marks on their own lines.
@@ -73,8 +77,8 @@ public class Strip {
     /**
      * Replaces every zero in a line with a space, preserving character positions.
      *
-     * @param line the line to process
-     * @return the line with all zeros replaced by spaces
+     * @param line the line to process.
+     * @return the line with all zeros replaced by spaces.
      */
     public static String replaceZeros(String line) {
         return line.replace('0', ' ');
