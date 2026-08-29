@@ -46,6 +46,8 @@ Maintain JUnit tests for approximately the top 50% of methods, prioritizing comp
 
 ## Git
 
+All future commits and branch names must follow the project-specific `seedu-git-standard` skill at `.codex/skills/seedu-git-standard/SKILL.md`, based on the [SE-EDU Git conventions](https://se-education.org/guides/conventions/git.html). Read and apply it before preparing a commit. Commit subjects must be imperative, capitalized, concise, and have no trailing period; non-trivial commits need a 72-column body explaining what and why; branch names must be meaningful kebab-case names, using the issue-number format when applicable.
+
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
