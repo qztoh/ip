@@ -49,6 +49,10 @@ public class Loki {
                             ui.listTasks(tasks);
                         }
                         break;
+                    case "find":
+                        ui.showSearchResults(tasks,
+                                tasks.find(parser.parseSearchKeyword(input)));
+                        break;
                     case "mark":
                         ui.obedient(tasks.mark(parser.parseTaskNumber(input)).toString());
                         break;

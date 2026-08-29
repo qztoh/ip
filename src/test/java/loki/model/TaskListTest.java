@@ -232,6 +232,36 @@ class TaskListTest {
     }
 
     @Test
+    void find_keywordMatchesDescriptionCaseInsensitivelyInOrder() {
+        TaskList searchableTaskList = new TaskList();
+        Task matchingTask = new ToDo("Read the project guide");
+        Task nonMatchingTask = new ToDo("Buy groceries");
+        Task secondMatchingTask = new ToDo("Write guide summary");
+        searchableTaskList.add(matchingTask);
+        searchableTaskList.add(nonMatchingTask);
+        searchableTaskList.add(secondMatchingTask);
+
+        List<Task> matchingTasks = searchableTaskList.find("GUIDE");
+
+        assertIterableEquals(List.of(matchingTask, secondMatchingTask), matchingTasks);
+    }
+
+    @Test
+    void find_noMatch_returnsEmptyList() {
+        TaskList searchableTaskList = new TaskList();
+        searchableTaskList.add(new ToDo("Buy groceries"));
+
+        assertTrue(searchableTaskList.find("dentist").isEmpty());
+    }
+
+    @Test
+    void find_blankKeyword_throwsIllegalArgumentException() {
+        TaskList searchableTaskList = new TaskList();
+
+        assertThrows(IllegalArgumentException.class, () -> searchableTaskList.find("  "));
+    }
+
+    @Test
     void asList_returnsReadOnlyViewThatReflectsListContents() {
         List<Task> view = taskList.asList();
 

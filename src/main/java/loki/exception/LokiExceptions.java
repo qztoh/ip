@@ -74,4 +74,13 @@ public class LokiExceptions extends Exception {
         return new LokiExceptions();
     }
 
+    /**
+     * Creates an error for a find command without search text.
+     *
+     * @return the invalid-find error
+     */
+    public static LokiExceptions invalidFind() {
+        return new LokiExceptions();
+    }
+
 }
