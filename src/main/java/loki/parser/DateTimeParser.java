@@ -3,9 +3,9 @@ package loki.parser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,9 +41,9 @@ public final class DateTimeParser {
     /**
      * Parses a user-entered date or date/time.
      *
-     * @param value the user-entered value
-     * @return the parsed date/time, using midnight for a date-only value
-     * @throws IllegalArgumentException if the value is empty or invalid
+     * @param value the user-entered value.
+     * @return the parsed date/time, using midnight for a date-only value.
+     * @throws IllegalArgumentException if the value is empty or invalid.
      */
     public static LocalDateTime parseUserInput(String value) {
         if (value == null || value.isBlank()) {
@@ -73,9 +73,9 @@ public final class DateTimeParser {
     /**
      * Parses a date/time stored in ISO format.
      *
-     * @param value the stored date/time
-     * @return the parsed date/time
-     * @throws IllegalArgumentException if the stored value is invalid
+     * @param value the stored date/time.
+     * @return the parsed date/time.
+     * @throws IllegalArgumentException if the stored value is invalid.
      */
     public static LocalDateTime parseStored(String value) {
         try {
@@ -88,8 +88,8 @@ public final class DateTimeParser {
     /**
      * Formats a date/time for storage without losing precision.
      *
-     * @param value the date/time to format
-     * @return the ISO storage representation
+     * @param value the date/time to format.
+     * @return the ISO storage representation.
      */
     public static String formatForStorage(LocalDateTime value) {
         return STORAGE_DATE_TIME.format(value);
@@ -98,8 +98,8 @@ public final class DateTimeParser {
     /**
      * Formats a date/time for display to the user.
      *
-     * @param value the date/time to format
-     * @return a readable date or date/time
+     * @param value the date/time to format.
+     * @return a readable date or date/time.
      */
     public static String formatForDisplay(LocalDateTime value) {
         if (value.toLocalTime().equals(java.time.LocalTime.MIDNIGHT)) {

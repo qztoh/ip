@@ -13,16 +13,17 @@ import loki.model.ToDo;
  * Converts raw user commands into command keywords, tasks, and task numbers.
  */
 public class Parser {
+
     /** Creates a parser for user commands. */
     public Parser() {
     }
 
     /**
-     * Extracts and normalises the command keyword.
+     * Extracts and normalizes the command keyword.
      *
-     * @param input the raw user command
-     * @return the lower-case command keyword
-     * @throws LokiExceptions if the command is empty
+     * @param input the raw user command.
+     * @return the lower-case command keyword.
+     * @throws LokiExceptions if the command is empty.
      */
     public String parseKeyword(String input) throws LokiExceptions {
         if (input == null || input.isBlank()) {
@@ -34,9 +35,9 @@ public class Parser {
     /**
      * Parses a task creation command.
      *
-     * @param input the raw task command
-     * @return the corresponding task
-     * @throws LokiExceptions if the command is malformed
+     * @param input the raw task command.
+     * @return the corresponding task.
+     * @throws LokiExceptions if the command is malformed.
      */
     public Task parseTask(String input) throws LokiExceptions {
         String trimmedInput = requireInput(input);
@@ -53,9 +54,9 @@ public class Parser {
     /**
      * Parses a one-based task number from a command.
      *
-     * @param input the raw command
-     * @return the one-based task number
-     * @throws LokiExceptions if the command does not contain exactly one number
+     * @param input the raw command.
+     * @return the one-based task number.
+     * @throws LokiExceptions if the command does not contain exactly one number.
      */
     public int parseTaskNumber(String input) throws LokiExceptions {
         String[] words = requireInput(input).split("\\s+");

@@ -13,8 +13,8 @@ public class Deadline extends Task {
     /**
      * Creates a new unfinished deadline task.
      *
-     * @param title the task description
-     * @param due the deadline, kept in the user's display format
+     * @param title the task description.
+     * @param due the deadline, kept in the user's display format.
      */
     public Deadline(String title, String due) {
         this(title, DateTimeParser.parseUserInput(due));
@@ -95,7 +95,7 @@ public class Deadline extends Task {
     /**
      * Formats this task with its deadline.
      *
-     * @return the formatted deadline task
+     * @return the formatted deadline task.
      */
     @Override
     public String toString() {
@@ -106,7 +106,7 @@ public class Deadline extends Task {
     /**
      * Converts this deadline task into the storage format.
      *
-     * @return the serialized deadline task
+     * @return the serialized deadline task.
      */
     @Override
     public String saveString() {

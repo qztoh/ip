@@ -7,7 +7,7 @@ public class ToDo extends Task {
     /**
      * Creates a new unfinished to-do task.
      *
-     * @param title the task description
+     * @param title the task description.
      */
     public ToDo(String title) {
         super(title);
@@ -36,7 +36,7 @@ public class ToDo extends Task {
     /**
      * Formats this task with the to-do task type marker.
      *
-     * @return the formatted to-do task
+     * @return the formatted to-do task.
      */
     @Override
     public String toString() {
@@ -46,7 +46,7 @@ public class ToDo extends Task {
     /**
      * Converts this to-do task into the storage format.
      *
-     * @return the serialized to-do task
+     * @return the serialized to-do task.
      */
     @Override
     public String saveString() {
