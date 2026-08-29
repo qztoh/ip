@@ -75,6 +75,21 @@ public class Parser {
     }
 
     /**
+     * Parses the search text from a find command.
+     *
+     * @param input the raw find command
+     * @return the search text after the command keyword
+     * @throws LokiExceptions if the search text is missing
+     */
+    public String parseSearchKeyword(String input) throws LokiExceptions {
+        String[] words = requireInput(input).split("\\s+", 2);
+        if (words.length != 2 || words[1].isBlank()) {
+            throw LokiExceptions.invalidFind();
+        }
+        return words[1].trim();
+    }
+
+    /**
      * Parses the title in a to-do command.
      *
      * @param input the raw task command

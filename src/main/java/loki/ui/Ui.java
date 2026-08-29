@@ -3,6 +3,7 @@ package loki.ui;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -135,7 +136,30 @@ public class Ui implements AutoCloseable {
         for (int i = 1; i <= tasks.size(); i++) {
             System.out.println(String.format("      %s. %s", i, tasks.get(i)));
         }
-        System.out.println();
+        System.out.println("");
+    }
+
+    /**
+     * Prints matching tasks using their original one-based list positions.
+     *
+     * @param tasks the complete task list
+     * @param matchingTasks the tasks returned by a search
+     * @throws LokiExceptions if a matching task cannot be retrieved by its index
+     */
+    public void showSearchResults(TaskList tasks, List<Task> matchingTasks)
+            throws LokiExceptions {
+        if (matchingTasks.isEmpty()) {
+            echo("No matching tasks found.");
+            return;
+        }
+
+        banner();
+        for (int i = 1; i <= tasks.size(); i++) {
+            if (matchingTasks.contains(tasks.get(i))) {
+                System.out.println(String.format("      %s. %s", i, tasks.get(i)));
+            }
+        }
+        System.out.println("");
     }
 
     /**

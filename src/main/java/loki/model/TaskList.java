@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import loki.exception.LokiExceptions;
 
@@ -111,6 +112,28 @@ public class TaskList implements Iterable<Task> {
      */
     public boolean isEmpty() {
         return tasks.isEmpty();
+    }
+
+    /**
+     * Returns tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword the case-insensitive text to search for
+     * @return an unmodifiable list of matching tasks in their original order
+     * @throws IllegalArgumentException if the keyword is null or blank
+     */
+    public List<Task> find(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException("Search keyword cannot be empty");
+        }
+
+        String normalizedKeyword = keyword.trim().toLowerCase(Locale.ROOT);
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getTitle().toLowerCase(Locale.ROOT).contains(normalizedKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return Collections.unmodifiableList(matchingTasks);
     }
 
     /**

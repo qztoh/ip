@@ -80,6 +80,42 @@ public class Loki {
                             break;
                         default:
                             throw LokiExceptions.unknownCommand();
+                    case "faretheewell":
+                    case "exit":
+                        storage.save(tasks);
+                        activeSession = false;
+                        ui.exit();
+                        break;
+                    case "list":
+                        if (tasks.isEmpty()) {
+                            ui.echo("You lack any tasks");
+                        } else {
+                            ui.listTasks(tasks);
+                        }
+                        break;
+                    case "find":
+                        ui.showSearchResults(tasks,
+                                tasks.find(parser.parseSearchKeyword(input)));
+                        break;
+                    case "mark":
+                        ui.obedient(tasks.mark(parser.parseTaskNumber(input)).toString());
+                        break;
+                    case "unmark":
+                        ui.obedient(tasks.unmark(parser.parseTaskNumber(input)).toString());
+                        break;
+                    case "todo":
+                    case "deadline":
+                    case "event":
+                        Task task = parser.parseTask(input);
+                        tasks.add(task);
+                        ui.taskAdded(task, tasks.size());
+                        break;
+                    case "delete":
+                        Task deletedTask = tasks.delete(parser.parseTaskNumber(input));
+                        ui.taskDeleted(deletedTask, tasks.size());
+                        break;
+                    default:
+                        throw LokiExceptions.unknownCommand();
                     }
                 } catch (LokiExceptions | IllegalArgumentException exception) {
                     ui.showError(exception.getMessage());

@@ -491,3 +491,45 @@ exit
 ```text
 [D][ ] Return book (by: Dec 02 2019, 6:00 PM)
 ```
+
+## Test Case UI-023: Find tasks by description keyword
+
+### Aim
+
+Verify that `find` displays tasks whose descriptions contain the keyword, ignoring case,
+in their original list positions.
+
+### Inputs
+
+```text
+todo Buy groceries
+todo Read the project guide
+find GUIDE
+exit
+```
+
+### Expected output
+
+```text
+2. [T][ ] Read the project guide
+```
+
+## Test Case UI-024: Report when no tasks match a search
+
+### Aim
+
+Verify that a search with no matching task descriptions reports that no matches were found.
+
+### Inputs
+
+```text
+todo Buy groceries
+find dentist
+exit
+```
+
+### Expected output
+
+```text
+No matching tasks found.
+```
