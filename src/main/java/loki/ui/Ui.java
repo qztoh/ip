@@ -51,7 +51,11 @@ public class Ui implements AutoCloseable {
         return scanner.nextLine();
     }
 
-    /** Prints Loki's splash screen, logo, and greeting. */
+    /**
+     * Prints Loki's splash screen, logo, and greeting.
+     *
+     * @throws IOException if the logo asset cannot be read
+     */
     public void showWelcome() throws IOException {
         String logo = Files.readString(resolveAsset("loki.txt"));
         banner();
@@ -60,12 +64,12 @@ public class Ui implements AutoCloseable {
         greeting();
     }
 
-    /** Prints a heavy divider. */
+    /** Prints a heavy divider to standard output. */
     public void bannerHeavy() {
         System.out.println("======================================================");
     }
 
-    /** Prints a light divider. */
+    /** Prints a light divider to standard output. */
     public void banner() {
         System.out.println("------------------------------------------------------");
     }
@@ -78,12 +82,16 @@ public class Ui implements AutoCloseable {
         );
     }
 
-    /** Prints a randomly selected farewell. */
+    /** Prints a randomly selected farewell message. */
     public void exit() {
         printHeavyDialogue(pickRandom(FAREWELLS));
     }
 
-    /** Prints a response to a user's input. */
+    /**
+     * Prints a response to a user's input.
+     *
+     * @param text the response text
+     */
     public void echo(String text) {
         printDialogue(text);
     }
@@ -98,17 +106,30 @@ public class Ui implements AutoCloseable {
         printDialogue(pickRandom(LOKIEXCEPTION));
     }
 
-    /** Prints an input or storage error. */
+    /**
+     * Prints an input or storage error.
+     *
+     * @param message the error message
+     */
     public void error(String message) {
         printDialogue(message);
     }
 
-    /** Prints a randomly selected response to a successful task operation. */
+    /**
+     * Prints a randomly selected response to a successful task operation.
+     *
+     * @param task the task involved in the operation
+     */
     public void obedient(String task) {
         printDialogue(pickRandom(VALID_TASK_RESPONSES) + "\n          " + task);
     }
 
-    /** Prints all tasks in their one-based list order. */
+    /**
+     * Prints all tasks in their one-based list order.
+     *
+     * @param tasks the tasks to print
+     * @throws LokiExceptions if a task cannot be retrieved by its index
+     */
     public void listTasks(TaskList tasks) throws LokiExceptions {
         banner();
         for (int i = 1; i <= tasks.size(); i++) {
@@ -117,33 +138,57 @@ public class Ui implements AutoCloseable {
         System.out.println("");
     }
 
-    /** Prints the response after a task is added. */
+    /**
+     * Prints the response after a task is added.
+     *
+     * @param task the task that was added
+     * @param taskCount the number of tasks after the addition
+     */
     public void taskAdded(Task task, int taskCount) {
         obedient(task.toString());
         taskCount(taskCount);
     }
 
-    /** Prints the response after a task is deleted. */
+    /**
+     * Prints the response after a task is deleted.
+     *
+     * @param task the task that was deleted
+     * @param taskCount the number of tasks after the deletion
+     */
     public void taskDeleted(Task task, int taskCount) {
         obedient(task.toString());
         taskCount(taskCount);
     }
 
-    /** Prints the number of tasks remaining. */
+    /**
+     * Prints the number of tasks remaining.
+     *
+     * @param taskCount the number of tasks remaining
+     */
     public void taskCount(int taskCount) {
         echo(String.format("You have %s tasks left to conquer.", taskCount));
     }
 
-    /** Returns a randomly selected Loki exception message. */
+    /**
+     * Returns a randomly selected Loki exception message.
+     *
+     * @return a formatted Loki exception message
+     */
     public static String randomExceptionMessage() {
         return "Loki error: " + pickRandom(LOKIEXCEPTION);
     }
 
+    /** Closes the scanner used for command input. */
     @Override
     public void close() {
         scanner.close();
     }
 
+    /**
+     * Prints one or more lines between light dividers.
+     *
+     * @param lines the dialogue lines to print
+     */
     private void printDialogue(String... lines) {
         banner();
         for (String line : lines) {
@@ -152,6 +197,11 @@ public class Ui implements AutoCloseable {
         banner();
     }
 
+    /**
+     * Prints one or more lines between heavy dividers.
+     *
+     * @param lines the dialogue lines to print
+     */
     private void printHeavyDialogue(String... lines) {
         bannerHeavy();
         for (String line : lines) {
@@ -160,10 +210,23 @@ public class Ui implements AutoCloseable {
         bannerHeavy();
     }
 
+    /**
+     * Selects one response from an array of choices.
+     *
+     * @param choices the available responses
+     * @return one randomly selected response
+     */
     private static String pickRandom(String[] choices) {
         return choices[MISCHIEF.nextInt(choices.length)];
     }
 
+    /**
+     * Loads dialogue entries separated by a line containing {@code +}.
+     *
+     * @param filename the dialogue asset filename
+     * @return the dialogue entries in the asset
+     * @throws ExceptionInInitializerError if the asset cannot be read or is empty
+     */
     private static String[] loadDialogue(String filename) {
         try {
             String content = Files.readString(resolveAsset(filename));
@@ -179,6 +242,12 @@ public class Ui implements AutoCloseable {
         }
     }
 
+    /**
+     * Resolves an asset from the working directory or the bundled assets directory.
+     *
+     * @param filename the asset filename
+     * @return the path to use for the asset
+     */
     private static Path resolveAsset(String filename) {
         Path workingDirectoryAsset = Path.of(filename);
         if (Files.exists(workingDirectoryAsset)) {

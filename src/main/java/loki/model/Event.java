@@ -22,6 +22,14 @@ public class Event extends Task {
         this(title, DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
     }
 
+    /**
+     * Creates an unfinished event from a start and end date/time.
+     *
+     * @param title the event description
+     * @param from the event start time
+     * @param to the event end time
+     * @throws IllegalArgumentException if either time is missing or the start is after the end
+     */
     public Event(String title, LocalDateTime from, LocalDateTime to) {
         super(title);
         this.from = validateDateTime(from, "Event start time");
@@ -31,10 +39,27 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Creates an event from user-entered date/time text and a completion status.
+     *
+     * @param title the event description
+     * @param done whether the event has been completed
+     * @param from the start time in a supported user-entered format
+     * @param to the end time in a supported user-entered format
+     */
     public Event(String title, boolean done, String from, String to) {
         this(title, done, DateTimeParser.parseUserInput(from), DateTimeParser.parseUserInput(to));
     }
 
+    /**
+     * Creates an event from date/time values and a completion status.
+     *
+     * @param title the event description
+     * @param done whether the event has been completed
+     * @param from the event start time
+     * @param to the event end time
+     * @throws IllegalArgumentException if either time is missing or the start is after the end
+     */
     public Event(String title, boolean done, LocalDateTime from, LocalDateTime to) {
         super(title, done);
         this.from = validateDateTime(from, "Event start time");
@@ -44,10 +69,27 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Creates an event from stored date/time text and a numeric status.
+     *
+     * @param title the event description
+     * @param done the completion status, which must be {@code 0} or {@code 1}
+     * @param from the stored start time in ISO format
+     * @param to the stored end time in ISO format
+     */
     public Event(String title, int done, String from, String to) {
         this(title, done, DateTimeParser.parseStored(from), DateTimeParser.parseStored(to));
     }
 
+    /**
+     * Creates an event from date/time values and a numeric status.
+     *
+     * @param title the event description
+     * @param done the completion status, which must be {@code 0} or {@code 1}
+     * @param from the event start time
+     * @param to the event end time
+     * @throws IllegalArgumentException if either time is missing or the start is after the end
+     */
     public Event(String title, int done, LocalDateTime from, LocalDateTime to) {
         super(title, done);
         this.from = validateDateTime(from, "Event start time");
@@ -57,6 +99,14 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Ensures that an event date/time is present.
+     *
+     * @param value the date/time to validate
+     * @param fieldName the field name used in an error message
+     * @return the validated date/time
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
     private static LocalDateTime validateDateTime(LocalDateTime value, String fieldName) {
         if (value == null) {
             throw new IllegalArgumentException(fieldName + " cannot be empty");

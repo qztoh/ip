@@ -16,6 +16,11 @@ public class LokiExceptions extends Exception {
         super(Ui.randomExceptionMessage());
     }
 
+    /**
+     * Creates an input error with a random Loki message and a specific detail.
+     *
+     * @param message the detail describing the error
+     */
     public LokiExceptions(String message) {
         super(Ui.randomExceptionMessage() + "\n" + message);
     }
