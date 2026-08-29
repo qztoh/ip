@@ -36,6 +36,10 @@ After every code update:
 2. Invoke the project-specific `test-ui` skill using `.codex/skills/test-ui/SKILL.md`.
 3. Run the complete UI test plan and include the console input/output transcript and any failure details in the handoff.
 
+## JUnit test coverage:
+
+Maintain JUnit tests for approximately the top 50% of methods, prioritizing complex, core, or business-critical logic. After every code change, review and update the relevant JUnit tests so they remain aligned with the implementation and continue to meet this coverage target.
+
 ## Git
 
 Use lightweight tags unless the user requests an annotated tag.
