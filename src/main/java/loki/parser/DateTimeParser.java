@@ -33,6 +33,7 @@ public final class DateTimeParser {
     private static final DateTimeFormatter DISPLAY_DATE_TIME =
             DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a", Locale.ENGLISH);
 
+    /** Prevents instantiation of this utility class. */
     private DateTimeParser() {
         // Utility class; do not instantiate.
     }

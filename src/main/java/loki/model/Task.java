@@ -17,11 +17,24 @@ public abstract class Task {
         this.done = false;
     }
 
+    /**
+     * Creates a task with the supplied completion status.
+     *
+     * @param title the task description
+     * @param done whether the task has been completed
+     */
     public Task(String title, boolean done) {
         this.title = validateStorageField(title, "Task title");
         this.done = done;
     }
 
+    /**
+     * Creates a task from the numeric completion status used in storage.
+     *
+     * @param title the task description
+     * @param done the completion status, which must be {@code 0} or {@code 1}
+     * @throws IllegalArgumentException if {@code done} is not {@code 0} or {@code 1}
+     */
     public Task(String title, int done) {
         this.title = validateStorageField(title, "Task title");
         if (done != 0 && done != 1) {

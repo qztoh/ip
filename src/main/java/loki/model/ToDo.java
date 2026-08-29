@@ -13,10 +13,22 @@ public class ToDo extends Task {
         super(title);
     }
 
+    /**
+     * Creates a to-do task with the supplied completion status.
+     *
+     * @param title the task description
+     * @param done whether the task has been completed
+     */
     public ToDo(String title, boolean done) {
         super(title, done);
     }
     
+    /**
+     * Creates a to-do task from the numeric status used in storage.
+     *
+     * @param title the task description
+     * @param done the completion status, which must be {@code 0} or {@code 1}
+     */
     public ToDo(String title, int done) {
         super(title, done);
     }

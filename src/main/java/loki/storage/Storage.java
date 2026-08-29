@@ -18,12 +18,18 @@ import loki.model.Deadline;
 import loki.parser.DateTimeParser;
 
 /**
- * Handles saving tasks to the application's data file.
+ * Handles loading tasks from and saving tasks to the application's data file.
  */
 public class Storage {
     private static final Path DEFAULT_WK_DIR = Path.of("src/data/tasks.txt");
     private final Path workingDir;
 
+    /**
+     * Creates storage backed by a custom file path.
+     *
+     * @param filePath the path of the task data file
+     * @throws IllegalArgumentException if the path is null, blank, or invalid
+     */
     public Storage(String filePath) {
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("Storage path cannot be empty");
@@ -35,11 +41,19 @@ public class Storage {
         }
     }
     
+    /** Creates storage backed by the application's default task file. */
     public Storage() {
         this.workingDir = DEFAULT_WK_DIR;
     }
 
 
+    /**
+     * Converts one serialized task record into a task object.
+     *
+     * @param rawTask the pipe-delimited task record
+     * @return the task represented by the record
+     * @throws LokiExceptions if the record is malformed
+     */
     private Task taskify(String rawTask) throws LokiExceptions {
         if (rawTask == null || rawTask.isBlank()) {
             throw new LokiExceptions("Task record cannot be empty");
@@ -104,6 +118,13 @@ public class Storage {
 
     }
 
+    /**
+     * Parses the numeric completion status stored for a task.
+     *
+     * @param status the stored status text
+     * @return the status as an integer
+     * @throws LokiExceptions if the status is not {@code 0} or {@code 1}
+     */
     private int parseStatus(String status) throws LokiExceptions {
         if (status.equals("0") || status.equals("1")) {
             return Integer.parseInt(status);
@@ -111,6 +132,13 @@ public class Storage {
         throw new LokiExceptions("Invalid task status");
     }
 
+    /**
+     * Ensures that a serialized record has the expected number of fields.
+     *
+     * @param fields the fields parsed from a task record
+     * @param expected the required number of fields
+     * @throws LokiExceptions if the number of fields is incorrect
+     */
     private void requireFieldCount(String[] fields, int expected)
             throws LokiExceptions {
         if (fields.length != expected) {
@@ -119,6 +147,12 @@ public class Storage {
     }
 
 
+    /**
+     * Loads all non-blank task records from the backing file.
+     *
+     * @return the loaded tasks, or an empty list if the file does not exist
+     * @throws LokiExceptions if the file cannot be read or contains an invalid record
+     */
     public TaskList load() throws LokiExceptions {
         TaskList taskList = new TaskList();
         List<String> allTasks;
@@ -139,6 +173,13 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Serializes and writes the supplied tasks to the backing file.
+     *
+     * @param taskList the tasks to save
+     * @throws LokiExceptions if the task list or any serialized record is invalid,
+     *         or if the file cannot be written
+     */
     public void save(TaskList taskList) throws LokiExceptions {
         if (taskList == null) {
             throw new LokiExceptions("Task list cannot be null");

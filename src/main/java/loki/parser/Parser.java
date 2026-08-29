@@ -13,6 +13,10 @@ import loki.model.ToDo;
  * Converts raw user commands into command keywords, tasks, and task numbers.
  */
 public class Parser {
+    /** Creates a parser for user commands. */
+    public Parser() {
+    }
+
     /**
      * Extracts and normalises the command keyword.
      *
@@ -66,6 +70,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the title in a to-do command.
+     *
+     * @param input the raw task command
+     * @param keyword the already-parsed command keyword
+     * @return the parsed to-do task
+     * @throws LokiExceptions if the title is missing
+     */
     private Task parseToDo(String input, String keyword) throws LokiExceptions {
         String title = afterKeyword(input, keyword);
         if (title.isEmpty()) {
@@ -74,6 +86,14 @@ public class Parser {
         return new ToDo(title);
     }
 
+    /**
+     * Parses the title and due date in a deadline command.
+     *
+     * @param input the raw task command
+     * @param keyword the already-parsed command keyword
+     * @return the parsed deadline task
+     * @throws LokiExceptions if the command or due date is malformed
+     */
     private Task parseDeadline(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase(Locale.ROOT);
@@ -95,6 +115,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the title, start time, and end time in an event command.
+     *
+     * @param input the raw task command
+     * @param keyword the already-parsed command keyword
+     * @return the parsed event task
+     * @throws LokiExceptions if the command or either time is malformed
+     */
     private Task parseEvent(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase(Locale.ROOT);
@@ -120,10 +148,24 @@ public class Parser {
         }
     }
 
+    /**
+     * Returns the portion of a command after its keyword.
+     *
+     * @param input the trimmed command
+     * @param keyword the command keyword
+     * @return the trimmed command body
+     */
     private String afterKeyword(String input, String keyword) {
         return input.substring(keyword.length()).trim();
     }
 
+    /**
+     * Validates and trims raw command input.
+     *
+     * @param input the raw command
+     * @return the trimmed command
+     * @throws LokiExceptions if the command is null or blank
+     */
     private String requireInput(String input) throws LokiExceptions {
         if (input == null || input.isBlank()) {
             throw LokiExceptions.emptyInput();

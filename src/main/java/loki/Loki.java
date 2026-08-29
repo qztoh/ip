@@ -13,7 +13,16 @@ import loki.ui.Ui;
  * Coordinates user interaction, command parsing, task operations, and storage.
  */
 public class Loki {
-    /** Starts the Loki task manager. */
+    /** Creates an application coordinator. */
+    public Loki() {
+    }
+
+    /**
+     * Starts the Loki task manager and processes commands until the session ends.
+     *
+     * @param args command-line arguments, which are not used
+     * @throws IOException if the welcome assets cannot be read
+     */
     public static void main(String[] args) throws IOException {
         Ui ui = new Ui();
         Storage storage = new Storage();
