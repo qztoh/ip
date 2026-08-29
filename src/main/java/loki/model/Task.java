@@ -10,18 +10,31 @@ public abstract class Task {
     /**
      * Creates a new unfinished task.
      *
-     * @param title the task description
+     * @param title the task description.
      */
     public Task(String title) {
         this.title = validateStorageField(title, "Task title");
         this.done = false;
     }
 
+    /**
+     * Creates a task with the supplied completion status.
+     *
+     * @param title the task description.
+     * @param done whether the task has been completed.
+     */
     public Task(String title, boolean done) {
         this.title = validateStorageField(title, "Task title");
         this.done = done;
     }
 
+    /**
+     * Creates a task from the numeric completion status used in storage.
+     *
+     * @param title the task description.
+     * @param done the completion status, which must be {@code 0} or {@code 1}.
+     * @throws IllegalArgumentException if {@code done} is not {@code 0} or {@code 1}.
+     */
     public Task(String title, int done) {
         this.title = validateStorageField(title, "Task title");
         if (done != 0 && done != 1) {
@@ -33,9 +46,9 @@ public abstract class Task {
     /**
      * Validates a value that will be stored in the pipe-delimited file.
      *
-     * @param value the value to validate
-     * @param fieldName the name used in the error message
-     * @return the unchanged valid value
+     * @param value the value to validate.
+     * @param fieldName the name used in the error message.
+     * @return the unchanged valid value.
      */
     protected static String validateStorageField(String value, String fieldName) {
         if (value == null || value.isBlank()) {
@@ -50,7 +63,7 @@ public abstract class Task {
     /**
      * Returns whether this task has been completed.
      *
-     * @return true if the task is done
+     * @return true if the task is done.
      */
     public boolean isDone() {
         return done;
@@ -73,7 +86,7 @@ public abstract class Task {
     /**
      * Returns the task title for use by subclasses when serializing the task.
      *
-     * @return the task title
+     * @return the task title.
      */
     protected String getTitle() {
         return title;
@@ -82,7 +95,7 @@ public abstract class Task {
     /**
      * Formats the task with a completion indicator.
      *
-     * @return the task's display text
+     * @return the task's display text.
      */
     @Override
     public String toString() {
@@ -93,7 +106,7 @@ public abstract class Task {
     /**
      * Converts this task into its storage format.
      *
-     * @return the serialized task
+     * @return the serialized task.
      */
     public abstract String saveString();
 }

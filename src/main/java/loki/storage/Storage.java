@@ -1,46 +1,60 @@
 package loki.storage;
 
 import java.io.IOException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.NoSuchFileException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import loki.exception.LokiExceptions;
+import loki.model.Deadline;
 import loki.model.Event;
 import loki.model.Task;
 import loki.model.TaskList;
 import loki.model.ToDo;
-import loki.model.Deadline;
 import loki.parser.DateTimeParser;
 
 /**
- * Handles saving tasks to the application's data file.
+ * Handles loading tasks from and saving tasks to the application's data file.
  */
 public class Storage {
-    private static final Path DEFAULT_WK_DIR = Path.of("src/data/tasks.txt");
-    private final Path workingDir;
+    private static final Path DEFAULT_TASK_FILE = Path.of("src/data/tasks.txt");
+    private final Path taskFile;
 
+    /**
+     * Creates storage backed by a custom file path.
+     *
+     * @param filePath the path of the task data file.
+     * @throws IllegalArgumentException if the path is null, blank, or invalid.
+     */
     public Storage(String filePath) {
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("Storage path cannot be empty");
         }
         try {
-            this.workingDir = Path.of(filePath);
+            this.taskFile = Path.of(filePath);
         } catch (InvalidPathException exception) {
             throw new IllegalArgumentException("Invalid storage path", exception);
         }
     }
     
+    /** Creates storage backed by the application's default task file. */
     public Storage() {
-        this.workingDir = DEFAULT_WK_DIR;
+        this.taskFile = DEFAULT_TASK_FILE;
     }
 
 
-    private Task taskify(String rawTask) throws LokiExceptions {
+    /**
+     * Parses one serialized task record into a task object.
+     *
+     * @param rawTask the pipe-delimited task record.
+     * @return the task represented by the record.
+     * @throws LokiExceptions if the record is malformed.
+     */
+    private Task parseTaskRecord(String rawTask) throws LokiExceptions {
         if (rawTask == null || rawTask.isBlank()) {
             throw new LokiExceptions("Task record cannot be empty");
         }
@@ -104,6 +118,13 @@ public class Storage {
 
     }
 
+    /**
+     * Parses the numeric completion status stored for a task.
+     *
+     * @param status the stored status text.
+     * @return the status as an integer.
+     * @throws LokiExceptions if the status is not {@code 0} or {@code 1}.
+     */
     private int parseStatus(String status) throws LokiExceptions {
         if (status.equals("0") || status.equals("1")) {
             return Integer.parseInt(status);
@@ -111,6 +132,13 @@ public class Storage {
         throw new LokiExceptions("Invalid task status");
     }
 
+    /**
+     * Ensures that a serialized record has the expected number of fields.
+     *
+     * @param fields the fields parsed from a task record.
+     * @param expected the required number of fields.
+     * @throws LokiExceptions if the number of fields is incorrect.
+     */
     private void requireFieldCount(String[] fields, int expected)
             throws LokiExceptions {
         if (fields.length != expected) {
@@ -119,11 +147,17 @@ public class Storage {
     }
 
 
+    /**
+     * Loads all non-blank task records from the backing file.
+     *
+     * @return the loaded tasks, or an empty list if the file does not exist.
+     * @throws LokiExceptions if the file cannot be read or contains an invalid record.
+     */
     public TaskList load() throws LokiExceptions {
         TaskList taskList = new TaskList();
         List<String> allTasks;
         try {
-            allTasks = Files.readAllLines(workingDir, StandardCharsets.UTF_8);
+            allTasks = Files.readAllLines(taskFile, StandardCharsets.UTF_8);
         } catch (NoSuchFileException exception) {
             return taskList;
         } catch (IOException | SecurityException exception) {
@@ -132,13 +166,20 @@ public class Storage {
 
         for (String rawTask : allTasks) {
             if (!rawTask.isBlank()) {
-                taskList.add(taskify(rawTask));
+                taskList.add(parseTaskRecord(rawTask));
             }
         }
         
         return taskList;
     }
 
+    /**
+     * Serializes and writes the supplied tasks to the backing file.
+     *
+     * @param taskList the tasks to save.
+     * @throws LokiExceptions if the task list or any serialized record is invalid,
+     *         or if the file cannot be written.
+     */
     public void save(TaskList taskList) throws LokiExceptions {
         if (taskList == null) {
             throw new LokiExceptions("Task list cannot be null");
@@ -158,11 +199,11 @@ public class Storage {
             tasks.append("\n");   
         }
         try {
-            Path parent = workingDir.getParent();
+            Path parent = taskFile.getParent();
             if (parent != null) {
                 Files.createDirectories(parent);
             }
-            Files.writeString(workingDir, tasks.toString(), StandardCharsets.UTF_8);
+            Files.writeString(taskFile, tasks.toString(), StandardCharsets.UTF_8);
         } catch (IOException | SecurityException exception) {
             throw new LokiExceptions("Unable to save file");
         }
