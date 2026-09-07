@@ -44,10 +44,10 @@ public class Parser {
         String keyword = parseKeyword(trimmedInput);
 
         return switch (keyword) {
-        case "todo" -> parseToDo(trimmedInput, keyword);
-        case "deadline" -> parseDeadline(trimmedInput, keyword);
-        case "event" -> parseEvent(trimmedInput, keyword);
-        default -> throw LokiExceptions.unknownCommand();
+            case "todo" -> parseToDo(trimmedInput, keyword);
+            case "deadline" -> parseDeadline(trimmedInput, keyword);
+            case "event" -> parseEvent(trimmedInput, keyword);
+            default -> throw LokiExceptions.unknownCommand();
         };
     }
 

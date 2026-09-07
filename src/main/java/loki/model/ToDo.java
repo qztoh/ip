@@ -22,7 +22,7 @@ public class ToDo extends Task {
     public ToDo(String title, boolean done) {
         super(title, done);
     }
-    
+
     /**
      * Creates a to-do task from the numeric status used in storage.
      *

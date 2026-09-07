@@ -8,10 +8,6 @@ import java.nio.file.Path;
  * Replaces zero characters with spaces in every line of a pasted string.
  */
 public class Strip {
-    /** Creates a utility instance for stripping zero characters. */
-    public Strip() {
-    }
-
     /*
      * Paste the string to process between the triple quotation marks.
      * Keep the opening and closing quotation marks on their own lines.
@@ -49,6 +45,10 @@ public class Strip {
 000000000000000+0*0000000000*+00000000000000000000
 00000000000000000000000000000000000000000000000000
             """;
+
+    /** Creates a utility instance for stripping zero characters. */
+    public Strip() {
+    }
 
     /**
      * Writes the pasted string after replacing every zero with a space.
