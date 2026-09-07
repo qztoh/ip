@@ -6,6 +6,10 @@ Run this plan from the repository root with Java 25.
 - Working directory: `.`
 - Setup: `javac -d _temp/ui-classes src/main/java/loki/model/Task.java src/main/java/loki/model/ToDo.java src/main/java/loki/model/Deadline.java src/main/java/loki/model/Event.java src/main/java/loki/parser/DateTimeParser.java src/main/java/loki/storage/Storage.java src/main/java/loki/model/TaskList.java src/main/java/loki/parser/Parser.java src/main/java/loki/ui/Ui.java src/main/java/loki/exception/LokiExceptions.java src/main/java/loki/Loki.java`
 
+## JavaFX smoke test
+
+Run `./gradlew run` with Java 25. A JavaFX window should open and display `Hello World!`.
+
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 
 ## Test Case UI-001: Add a task and list it
