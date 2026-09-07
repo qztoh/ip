@@ -40,7 +40,7 @@ public class Storage {
             throw new IllegalArgumentException("Invalid storage path", exception);
         }
     }
-    
+
     /** Creates storage backed by the application's default task file. */
     public Storage() {
         this.taskFile = DEFAULT_TASK_FILE;
@@ -169,7 +169,7 @@ public class Storage {
                 taskList.add(parseTaskRecord(rawTask));
             }
         }
-        
+
         return taskList;
     }
 
@@ -196,7 +196,7 @@ public class Storage {
                 throw new LokiExceptions("Task has an invalid storage format");
             }
             tasks.append(serializedTask);
-            tasks.append("\n");   
+            tasks.append("\n");
         }
         try {
             Path parent = taskFile.getParent();
@@ -207,6 +207,6 @@ public class Storage {
         } catch (IOException | SecurityException exception) {
             throw new LokiExceptions("Unable to save file");
         }
-        
+
     }
 }

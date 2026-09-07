@@ -236,8 +236,7 @@ class TaskListTest {
         List<Task> view = taskList.asList();
 
         assertIterableEquals(List.of(firstTask, secondTask, thirdTask), view);
-        assertThrows(UnsupportedOperationException.class,
-                () -> view.add(new ToDo("not allowed")));
+        assertThrows(UnsupportedOperationException.class, () -> view.add(new ToDo("not allowed")));
 
         taskList.add(new ToDo("new task"));
         assertEquals(4, view.size());
