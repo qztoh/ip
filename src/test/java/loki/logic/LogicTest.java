@@ -45,6 +45,36 @@ class LogicTest {
     }
 
     @Test
+    void processCommand_invalidTodo_returnsUsageTip() {
+        Logic logic = createLogic();
+
+        String response = logic.processCommand("todo");
+
+        assertTrue(response.contains("Usage: todo <task description>"));
+        assertTrue(response.contains("Example: todo Buy groceries"));
+    }
+
+    @Test
+    void processCommand_invalidDeadline_returnsUsageTip() {
+        Logic logic = createLogic();
+
+        String response = logic.processCommand("deadline Return book");
+
+        assertTrue(response.contains("Usage: deadline <task description> /by <date/time>"));
+        assertTrue(response.contains("Example: deadline Return book /by 2019-06-06"));
+    }
+
+    @Test
+    void processCommand_invalidEvent_returnsUsageTip() {
+        Logic logic = createLogic();
+
+        String response = logic.processCommand("event Project meeting /from Aug 6th 2pm");
+
+        assertTrue(response.contains("Usage: event <title> /from <date/time> /to <date/time>"));
+        assertTrue(response.contains("Example: event Project meeting /from 2019-08-06 1400"));
+    }
+
+    @Test
     void processCommand_exit_savesTasks() {
         Logic logic = createLogic();
         logic.processCommand("todo Remember to rest");
