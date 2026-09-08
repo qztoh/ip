@@ -44,6 +44,18 @@ class LogicTest {
         assertTrue(response.contains("Loki error:"));
     }
 
+    @Test
+    void processCommand_exit_savesTasks() {
+        Logic logic = createLogic();
+        logic.processCommand("todo Remember to rest");
+
+        String response = logic.processCommand("exit");
+        Logic reloadedLogic = createLogic();
+
+        assertTrue(response.contains("Farewell, mortal."));
+        assertTrue(reloadedLogic.processCommand("list").contains("Remember to rest"));
+    }
+
     /**
      * Creates logic backed by an isolated temporary file.
      *
