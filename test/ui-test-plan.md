@@ -12,6 +12,9 @@ Run `./gradlew run` with Java 25. A JavaFX window titled `Loki` should open.
 
 Enter `todo Buy groceries` and press Enter. The window should display the user command and a Loki response containing `[T][ ] Buy groceries`.
 Enter `list` and press Send. The window should display `1. [T][ ] Buy groceries` and scroll to the newest response.
+The Send button should be disabled for blank or whitespace-only input and enabled once a command is entered.
+The input field should remain at the bottom and the chat area should expand when the window is resized.
+User and Loki messages should use distinct avatars and bubble styles, with invalid-command responses visibly marked as errors.
 
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 

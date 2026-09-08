@@ -1,0 +1,40 @@
+.dialog-box {
+    -fx-alignment: TOP_LEFT;
+    -fx-padding: 8px 12px;
+    -fx-spacing: 8px;
+}
+
+.dialog-box .label {
+    -fx-background-radius: 14px 14px 14px 3px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e1e5ec;
+    -fx-border-radius: 14px 14px 14px 3px;
+    -fx-padding: 10px 13px;
+    -fx-text-fill: #1f2937;
+}
+
+.user-dialog {
+    -fx-alignment: TOP_RIGHT;
+}
+
+.user-dialog .label {
+    -fx-background-color: #dbeafe;
+    -fx-border-color: #bfdbfe;
+    -fx-background-radius: 14px 14px 3px 14px;
+    -fx-border-radius: 14px 14px 3px 14px;
+}
+
+.loki-dialog .label {
+    -fx-background-color: #fff1f2;
+    -fx-border-color: #fecdd3;
+}
+
+.error-dialog .label {
+    -fx-background-color: #fef2f2;
+    -fx-border-color: #fca5a5;
+    -fx-text-fill: #991b1b;
+}
+
+.dialog-box #displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.2), 6, 0.25, 0, 2);
+}
