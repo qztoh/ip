@@ -6,9 +6,10 @@
 
 .dialog-box .label {
     -fx-background-radius: 14px 14px 14px 3px;
-    -fx-background-color: #ffffff;
-    -fx-border-color: #e1e5ec;
+    -fx-background-color: #dcfce7;
+    -fx-border-color: #86efac;
     -fx-border-radius: 14px 14px 14px 3px;
+    -fx-font-size: 18px;
     -fx-padding: 10px 13px;
     -fx-text-fill: #1f2937;
 }
@@ -25,8 +26,8 @@
 }
 
 .loki-dialog .label {
-    -fx-background-color: #fff1f2;
-    -fx-border-color: #fecdd3;
+    -fx-background-color: #dcfce7;
+    -fx-border-color: #86efac;
 }
 
 .error-dialog .label {

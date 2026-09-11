@@ -1,6 +1,7 @@
 import java.io.InputStream;
 import java.util.Objects;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -9,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import loki.exception.LokiExceptions;
 import loki.logic.Logic;
 
@@ -16,6 +18,7 @@ import loki.logic.Logic;
  * Controls the FXML-defined Loki chat window.
  */
 public class MainWindow extends AnchorPane {
+    private static final double FAREWELL_DELAY_SECONDS = 1.2;
     private static final String GREETING = "Greetings, mortal. Loki at your service.";
     private static final String ERROR_PREFIX = "Loki error:";
 
@@ -77,8 +80,12 @@ public class MainWindow extends AnchorPane {
 
         if (isExitCommand(userText) && !isError) {
             isClosing = true;
-            Stage stage = (Stage) userInput.getScene().getWindow();
-            stage.close();
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+
+            PauseTransition farewellDelay = new PauseTransition(Duration.seconds(FAREWELL_DELAY_SECONDS));
+            farewellDelay.setOnFinished(event -> closeWindow());
+            farewellDelay.play();
         }
     }
 
@@ -110,6 +117,14 @@ public class MainWindow extends AnchorPane {
             throw new IllegalStateException("Missing GUI image resource: " + resourcePath);
         }
         return new Image(imageStream);
+    }
+
+    /**
+     * Closes the JavaFX window after the farewell response has been displayed.
+     */
+    private void closeWindow() {
+        Stage stage = (Stage) userInput.getScene().getWindow();
+        stage.close();
     }
 
     /**
