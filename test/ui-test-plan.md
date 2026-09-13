@@ -6,6 +6,19 @@ Run this plan from the repository root with Java 25.
 - Working directory: `.`
 - Setup: `javac -d _temp/ui-classes src/main/java/loki/model/Task.java src/main/java/loki/model/ToDo.java src/main/java/loki/model/Deadline.java src/main/java/loki/model/Event.java src/main/java/loki/parser/DateTimeParser.java src/main/java/loki/storage/Storage.java src/main/java/loki/model/TaskList.java src/main/java/loki/parser/Parser.java src/main/java/loki/ui/Ui.java src/main/java/loki/exception/LokiExceptions.java src/main/java/loki/Loki.java`
 
+## JavaFX smoke test
+
+Run `./gradlew run` with Java 25. A JavaFX window titled `Loki` should open.
+
+Enter `todo Buy groceries` and press Enter. The window should display the user command and a Loki response containing `[T][ ] Buy groceries`.
+Enter `list` and press Send. The window should display `1. [T][ ] Buy groceries` and scroll to the newest response.
+The Send button should be disabled for blank or whitespace-only input and enabled once a command is entered.
+The input field should remain at the bottom and the chat area should expand when the window is resized.
+User and Loki messages should use distinct avatars and bubble styles, with invalid-command responses visibly marked as errors.
+Entering `exit` or `faretheewell` should save the task list, show the farewell response briefly, and then close the JavaFX window.
+For malformed `todo`, `deadline`, or `event` commands, Loki should include the required syntax and a valid example.
+Normal Loki responses should use green message bubbles, error responses should use red message bubbles, and the visible text should use the larger font size.
+
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 
 ## Test Case UI-001: Add a task and list it
