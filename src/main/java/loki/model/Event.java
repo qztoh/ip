@@ -31,12 +31,7 @@ public class Event extends Task {
      * @throws IllegalArgumentException if either time is missing or the start is after the end
      */
     public Event(String title, LocalDateTime from, LocalDateTime to) {
-        super(title);
-        this.from = validateDateTime(from, "Event start time");
-        this.to = validateDateTime(to, "Event end time");
-        if (this.from.isAfter(this.to)) {
-            throw new IllegalArgumentException("Event start must not be after its end");
-        }
+        this(title, false, from, to);
     }
 
     /**
@@ -61,12 +56,7 @@ public class Event extends Task {
      * @throws IllegalArgumentException if either time is missing or the start is after the end
      */
     public Event(String title, boolean done, LocalDateTime from, LocalDateTime to) {
-        super(title, done);
-        this.from = validateDateTime(from, "Event start time");
-        this.to = validateDateTime(to, "Event end time");
-        if (this.from.isAfter(this.to)) {
-            throw new IllegalArgumentException("Event start must not be after its end");
-        }
+        this(title, done ? 1 : 0, from, to);
     }
 
     /**
