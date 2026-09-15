@@ -79,6 +79,8 @@ public class TaskList implements Iterable<Task> {
     public Task mark(int oneBasedIndex) throws LokiExceptions {
         Task task = get(oneBasedIndex);
         task.markDone();
+        // Every Task implementation must honor the completion contract before we report success.
+        assert task.isDone() : "Marking a task must leave it completed";
         return task;
     }
 
@@ -92,6 +94,8 @@ public class TaskList implements Iterable<Task> {
     public Task unmark(int oneBasedIndex) throws LokiExceptions {
         Task task = get(oneBasedIndex);
         task.unmarkDone();
+        // Repeated unmarking must also leave the task incomplete.
+        assert !task.isDone() : "Unmarking a task must leave it incomplete";
         return task;
     }
 

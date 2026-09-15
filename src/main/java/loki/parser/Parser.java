@@ -157,6 +157,12 @@ public class Parser {
      * @return the trimmed command body
      */
     private String afterKeyword(String input, String keyword) {
+        // Only internal parsing methods call this helper, after validating and trimming the input.
+        assert input != null && input.equals(input.trim()) : "Command must already be trimmed";
+        // The keyword must come from this command so its length safely locates the command body.
+        assert keyword != null && !keyword.isEmpty()
+                && keyword.equals(input.split("\\s+")[0].toLowerCase(Locale.ROOT))
+                : "Keyword must match the normalized first word of the command";
         return input.substring(keyword.length()).trim();
     }
 
