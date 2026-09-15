@@ -73,49 +73,78 @@ public class Storage {
             throw new LokiExceptions("Task title cannot be empty");
         }
 
-        // T | 0 | one
-        // D | 0 | two | later
-        // E | 0 | three | now-forever
         return switch (type) {
-            case "T" -> {
-                requireFieldCount(fields, 3);
-                yield new ToDo(title, done);
-            }
-            case "D" -> {
-                requireFieldCount(fields, 4);
-                String due = fields[3].trim();
-                if (due.isEmpty()) {
-                    throw new LokiExceptions("Deadline cannot be empty");
-                }
-                try {
-                    yield new Deadline(title, done, DateTimeParser.parseStored(due));
-                } catch (IllegalArgumentException exception) {
-                    throw new LokiExceptions("Invalid deadline date/time");
-                }
-            }
-            case "E" -> {
-                requireFieldCount(fields, 4);
-                String schedule = fields[3].trim();
-                int separator = schedule.indexOf("->");
-                if (separator <= 0 || separator >= schedule.length() - 2) {
-                    throw new LokiExceptions("Invalid event time format");
-                }
-                String from = schedule.substring(0, separator).trim();
-                String to = schedule.substring(separator + 2).trim();
-                if (from.isEmpty() || to.isEmpty()) {
-                    throw new LokiExceptions("Invalid event time format");
-                }
-                try {
-                    LocalDateTime start = DateTimeParser.parseStored(from);
-                    LocalDateTime end = DateTimeParser.parseStored(to);
-                    yield new Event(title, done, start, end);
-                } catch (IllegalArgumentException exception) {
-                    throw new LokiExceptions("Invalid event date/time");
-                }
-            }
+            case "T" -> parseToDoRecord(fields, title, done);
+            case "D" -> parseDeadlineRecord(fields, title, done);
+            case "E" -> parseEventRecord(fields, title, done);
             default -> throw new LokiExceptions("Unknown Task type; Is your file corrupted?");
         };
+    }
 
+    /**
+     * Parses a to-do record after validating its shared fields.
+     *
+     * @param fields the split record fields.
+     * @param title the validated task title.
+     * @param done the validated completion status.
+     * @return the stored to-do task.
+     * @throws LokiExceptions if the record has an unexpected field count.
+     */
+    private Task parseToDoRecord(String[] fields, String title, int done) throws LokiExceptions {
+        requireFieldCount(fields, 3);
+        return new ToDo(title, done);
+    }
+
+    /**
+     * Parses a deadline record after validating its shared fields.
+     *
+     * @param fields the split record fields.
+     * @param title the validated task title.
+     * @param done the validated completion status.
+     * @return the stored deadline task.
+     * @throws LokiExceptions if the field count or due date is invalid.
+     */
+    private Task parseDeadlineRecord(String[] fields, String title, int done) throws LokiExceptions {
+        requireFieldCount(fields, 4);
+        String due = fields[3].trim();
+        if (due.isEmpty()) {
+            throw new LokiExceptions("Deadline cannot be empty");
+        }
+        try {
+            return new Deadline(title, done, DateTimeParser.parseStored(due));
+        } catch (IllegalArgumentException exception) {
+            throw new LokiExceptions("Invalid deadline date/time");
+        }
+    }
+
+    /**
+     * Parses an event record after validating its shared fields.
+     *
+     * @param fields the split record fields.
+     * @param title the validated task title.
+     * @param done the validated completion status.
+     * @return the stored event task.
+     * @throws LokiExceptions if the field count or event interval is invalid.
+     */
+    private Task parseEventRecord(String[] fields, String title, int done) throws LokiExceptions {
+        requireFieldCount(fields, 4);
+        String schedule = fields[3].trim();
+        int separator = schedule.indexOf("->");
+        if (separator <= 0 || separator >= schedule.length() - 2) {
+            throw new LokiExceptions("Invalid event time format");
+        }
+        String from = schedule.substring(0, separator).trim();
+        String to = schedule.substring(separator + 2).trim();
+        if (from.isEmpty() || to.isEmpty()) {
+            throw new LokiExceptions("Invalid event time format");
+        }
+        try {
+            LocalDateTime start = DateTimeParser.parseStored(from);
+            LocalDateTime end = DateTimeParser.parseStored(to);
+            return new Event(title, done, start, end);
+        } catch (IllegalArgumentException exception) {
+            throw new LokiExceptions("Invalid event date/time");
+        }
     }
 
     /**

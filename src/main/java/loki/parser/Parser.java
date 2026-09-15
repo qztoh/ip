@@ -13,6 +13,9 @@ import loki.model.ToDo;
  * Converts raw user commands into command keywords, tasks, and task numbers.
  */
 public class Parser {
+    private static final String DEADLINE_MARKER = "/by ";
+    private static final String EVENT_START_MARKER = "/from ";
+    private static final String EVENT_END_MARKER = "/to ";
 
     /** Creates a parser for user commands. */
     public Parser() {
@@ -98,13 +101,13 @@ public class Parser {
     private Task parseDeadline(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase(Locale.ROOT);
-        int byIndex = lowerBody.indexOf("/by ");
+        int byIndex = lowerBody.indexOf(DEADLINE_MARKER);
         if (byIndex < 0) {
             throw LokiExceptions.invalidDeadline();
         }
 
         String title = body.substring(0, byIndex).trim();
-        String due = body.substring(byIndex + 4).trim();
+        String due = body.substring(byIndex + DEADLINE_MARKER.length()).trim();
         if (title.isEmpty() || due.isEmpty()) {
             throw LokiExceptions.invalidDeadline();
         }
@@ -127,15 +130,15 @@ public class Parser {
     private Task parseEvent(String input, String keyword) throws LokiExceptions {
         String body = afterKeyword(input, keyword);
         String lowerBody = body.toLowerCase(Locale.ROOT);
-        int fromIndex = lowerBody.indexOf("/from ");
-        int toIndex = lowerBody.indexOf("/to ", fromIndex + 6);
+        int fromIndex = lowerBody.indexOf(EVENT_START_MARKER);
+        int toIndex = lowerBody.indexOf(EVENT_END_MARKER, fromIndex + EVENT_START_MARKER.length());
         if (fromIndex < 0 || toIndex < 0) {
             throw LokiExceptions.invalidEvent();
         }
 
         String title = body.substring(0, fromIndex).trim();
-        String from = body.substring(fromIndex + 6, toIndex).trim();
-        String to = body.substring(toIndex + 4).trim();
+        String from = body.substring(fromIndex + EVENT_START_MARKER.length(), toIndex).trim();
+        String to = body.substring(toIndex + EVENT_END_MARKER.length()).trim();
         if (title.isEmpty() || from.isEmpty() || to.isEmpty()) {
             throw LokiExceptions.invalidEvent();
         }
