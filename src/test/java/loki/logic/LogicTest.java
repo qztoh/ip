@@ -1,5 +1,6 @@
 package loki.logic;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -21,6 +22,43 @@ class LogicTest {
 
         assertTrue(addResponse.contains("[T][ ] Buy groceries"));
         assertTrue(listResponse.contains("1. [T][ ] Buy groceries"));
+    }
+
+    @Test
+    void processCommand_listEmptyTasks_returnsEmptyListResponse() {
+        Logic logic = createLogic();
+
+        assertEquals("You lack any tasks", logic.processCommand("list"));
+    }
+
+    @Test
+    void processCommand_listMixedTasks_preservesOrderNumberingAndStatus() {
+        Logic logic = createLogic();
+        logic.processCommand("todo Read book");
+        logic.processCommand("deadline Return book /by 2019-06-06");
+        logic.processCommand("event Meeting /from 2019-08-06 1400 /to 2019-08-06 1600");
+        logic.processCommand("todo Read book");
+        logic.processCommand("mark 2");
+
+        String expected = String.join(System.lineSeparator(),
+                "1. [T][ ] Read book",
+                "2. [D][X] Return book (by: Jun 06 2019)",
+                "3. [E][ ] Meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)",
+                "4. [T][ ] Read book");
+        assertEquals(expected, logic.processCommand("list"));
+        assertEquals(expected, logic.processCommand("list"));
+    }
+
+    @Test
+    void processCommand_listAfterDeletion_renumbersRemainingTasks() {
+        Logic logic = createLogic();
+        logic.processCommand("todo First task");
+        logic.processCommand("todo Second task");
+        logic.processCommand("todo Third task");
+        logic.processCommand("delete 2");
+
+        assertEquals(String.join(System.lineSeparator(), "1. [T][ ] First task", "2. [T][ ] Third task"),
+                logic.processCommand("list"));
     }
 
     @Test

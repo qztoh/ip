@@ -1,5 +1,9 @@
 package loki.logic;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import loki.exception.LokiExceptions;
 import loki.model.Task;
 import loki.model.TaskList;
@@ -118,13 +122,11 @@ public class Logic {
             return "You lack any tasks";
         }
 
-        StringBuilder response = new StringBuilder();
-        int index = 1;
-        for (Task task : tasks) {
-            response.append(index).append(". ").append(task).append(System.lineSeparator());
-            index++;
-        }
-        return response.toString().trim();
+        List<Task> taskView = tasks.asList();
+        return IntStream.range(0, taskView.size())
+                .mapToObj(index -> (index + 1) + ". " + taskView.get(index))
+                .collect(Collectors.joining(System.lineSeparator()))
+                .trim();
     }
 
     /**
