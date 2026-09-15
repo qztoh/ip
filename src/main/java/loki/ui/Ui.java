@@ -217,6 +217,8 @@ public class Ui implements AutoCloseable {
      * @return one randomly selected response
      */
     private static String pickRandom(String[] choices) {
+        // Internal callers supply dialogue arrays initialized by loadDialogue before selection.
+        assert choices != null && choices.length > 0 : "Dialogue choices must already be loaded";
         return choices[RANDOM_GENERATOR.nextInt(choices.length)];
     }
 
