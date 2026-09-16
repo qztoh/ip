@@ -8,6 +8,7 @@ import loki.exception.LokiExceptions;
 import loki.model.Task;
 import loki.model.TaskList;
 import loki.parser.Parser;
+import loki.parser.TaskUpdate;
 import loki.storage.Storage;
 
 /** Provides command processing for non-console user interfaces. */
@@ -75,6 +76,7 @@ public class Logic {
                 case "unmark" -> tasks.unmark(parser.parseTaskNumber(input)).toString();
                 case "todo", "deadline", "event" -> addTask(input);
                 case "delete" -> deleteTask(input);
+                case "update" -> updateTask(input);
                 default -> throw LokiExceptions.unknownCommand();
             };
         } catch (LokiExceptions | IllegalArgumentException exception) {
@@ -110,6 +112,22 @@ public class Logic {
     private String deleteTask(String input) throws LokiExceptions {
         Task deletedTask = tasks.delete(parser.parseTaskNumber(input));
         return "Deleted: " + deletedTask + "\nYou have " + tasks.size() + " tasks left to conquer.";
+    }
+
+    /**
+     * Applies an update and returns the updated task.
+     *
+     * @param input the update command.
+     * @return the updated task response.
+     * @throws LokiExceptions if the command or update is invalid.
+     */
+    private String updateTask(String input) throws LokiExceptions {
+        TaskUpdate update = parser.parseUpdate(input);
+        try {
+            return "Updated: " + tasks.update(update);
+        } catch (LokiExceptions | IllegalArgumentException exception) {
+            throw LokiExceptions.invalidUpdate();
+        }
     }
 
     /**

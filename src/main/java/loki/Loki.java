@@ -6,6 +6,7 @@ import loki.exception.LokiExceptions;
 import loki.model.Task;
 import loki.model.TaskList;
 import loki.parser.Parser;
+import loki.parser.TaskUpdate;
 import loki.storage.Storage;
 import loki.ui.Ui;
 
@@ -77,6 +78,16 @@ public class Loki {
                         case "delete":
                             Task deletedTask = tasks.delete(parser.parseTaskNumber(input));
                             ui.showTaskDeleted(deletedTask, tasks.size());
+                            break;
+                        case "update":
+                            TaskUpdate update = parser.parseUpdate(input);
+                            Task updatedTask;
+                            try {
+                                updatedTask = tasks.update(update);
+                            } catch (LokiExceptions | IllegalArgumentException exception) {
+                                throw LokiExceptions.invalidUpdate();
+                            }
+                            ui.echo("Updated: " + updatedTask);
                             break;
                         default:
                             throw LokiExceptions.unknownCommand();

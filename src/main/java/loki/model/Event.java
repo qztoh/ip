@@ -3,6 +3,7 @@ package loki.model;
 import java.time.LocalDateTime;
 
 import loki.parser.DateTimeParser;
+import loki.parser.TaskUpdate;
 
 /**
  * A task scheduled between a specific start time and end time.
@@ -126,5 +127,23 @@ public class Event extends Task {
         String schedule = DateTimeParser.formatForStorage(from) + " -> "
                 + DateTimeParser.formatForStorage(to);
         return String.format("E | %d | %s | %s", status, getTitle(), schedule);
+    }
+
+    /**
+     * Creates an updated event while preserving its completion status.
+     *
+     * @param update the replacement fields.
+     * @return the updated event.
+     * @throws IllegalArgumentException if the update contains a deadline field or reverses the interval.
+     */
+    @Override
+    public Task updatedWith(TaskUpdate update) {
+        if (update.getDeadline().isPresent()) {
+            throw new IllegalArgumentException("An event does not support deadline fields");
+        }
+        String title = update.getTitle().orElse(getTitle());
+        LocalDateTime updatedFrom = update.getEventStart().orElse(from);
+        LocalDateTime updatedTo = update.getEventEnd().orElse(to);
+        return new Event(title, isDone(), updatedFrom, updatedTo);
     }
 }

@@ -1,5 +1,7 @@
 package loki.model;
 
+import loki.parser.TaskUpdate;
+
 /**
  * A task that does not have a deadline or scheduled time.
  */
@@ -52,5 +54,22 @@ public class ToDo extends Task {
     public String saveString() {
         int status = isDone() ? 1 : 0;
         return String.format("T | %d | %s", status, getTitle());
+    }
+
+    /**
+     * Creates an updated to-do while preserving its completion status.
+     *
+     * @param update the replacement fields.
+     * @return the updated to-do.
+     * @throws IllegalArgumentException if the update contains deadline or event fields.
+     */
+    @Override
+    public Task updatedWith(TaskUpdate update) {
+        if (update.getDeadline().isPresent() || update.getEventStart().isPresent()
+                || update.getEventEnd().isPresent()) {
+            throw new IllegalArgumentException("A to-do only supports title updates");
+        }
+        String title = update.getTitle().orElse(getTitle());
+        return new ToDo(title, isDone());
     }
 }

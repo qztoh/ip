@@ -9,6 +9,13 @@ import loki.ui.Ui;
  * {@link Ui#getRandomExceptionMessage()}.</p>
  */
 public class LokiExceptions extends Exception {
+    private static final String UPDATE_USAGE = "Usage: update <task number> <field> [<field>...]\n"
+            + "Fields: todo=/title; deadline=/title,/by; event=/title,/from,/to\n"
+            + "Examples:\n"
+            + "update 1 /title Buy groceries\n"
+            + "update 2 /by 2019-06-06\n"
+            + "update 3 /from 2019-08-06 1400 /to 2019-08-06 1600";
+
     /**
      * Creates an input error with a randomly selected Loki message.
      */
@@ -77,6 +84,15 @@ public class LokiExceptions extends Exception {
      */
     public static LokiExceptions invalidEvent() {
         return new LokiExceptions();
+    }
+
+    /**
+     * Creates an error for an incorrectly formatted update command.
+     *
+     * @return the invalid-update error with its stable usage text.
+     */
+    public static LokiExceptions invalidUpdate() {
+        return new LokiExceptions(UPDATE_USAGE);
     }
 
 }

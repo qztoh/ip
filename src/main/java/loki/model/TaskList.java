@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import loki.exception.LokiExceptions;
+import loki.parser.TaskUpdate;
 
 /**
  * Owns the application's tasks and operations on their one-based indices.
@@ -97,6 +98,25 @@ public class TaskList implements Iterable<Task> {
         // Repeated unmarking must also leave the task incomplete.
         assert !task.isDone() : "Unmarking a task must leave it incomplete";
         return task;
+    }
+
+    /**
+     * Atomically replaces the selected task with its updated version.
+     *
+     * @param update the validated update to apply.
+     * @return the replacement task.
+     * @throws LokiExceptions if the task number is outside the list.
+     * @throws IllegalArgumentException if the update does not apply to the task type.
+     */
+    public Task update(TaskUpdate update) throws LokiExceptions {
+        if (update == null) {
+            throw new IllegalArgumentException("Task update cannot be null");
+        }
+        int taskNumber = update.getTaskNumber();
+        Task currentTask = get(taskNumber);
+        Task replacement = currentTask.updatedWith(update);
+        tasks.set(taskNumber - 1, replacement);
+        return replacement;
     }
 
     /**

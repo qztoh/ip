@@ -4,7 +4,7 @@ Run this plan from the repository root with Java 25.
 
 - Program: `java -cp _temp/ui-classes loki.Loki`
 - Working directory: `.`
-- Setup: `javac -d _temp/ui-classes src/main/java/loki/model/Task.java src/main/java/loki/model/ToDo.java src/main/java/loki/model/Deadline.java src/main/java/loki/model/Event.java src/main/java/loki/parser/DateTimeParser.java src/main/java/loki/storage/Storage.java src/main/java/loki/model/TaskList.java src/main/java/loki/parser/Parser.java src/main/java/loki/ui/Ui.java src/main/java/loki/exception/LokiExceptions.java src/main/java/loki/Loki.java`
+- Setup: `javac -d _temp/ui-classes src/main/java/loki/model/Task.java src/main/java/loki/model/ToDo.java src/main/java/loki/model/Deadline.java src/main/java/loki/model/Event.java src/main/java/loki/parser/DateTimeParser.java src/main/java/loki/parser/TaskUpdate.java src/main/java/loki/storage/Storage.java src/main/java/loki/model/TaskList.java src/main/java/loki/parser/Parser.java src/main/java/loki/ui/Ui.java src/main/java/loki/exception/LokiExceptions.java src/main/java/loki/Loki.java`
 
 ## JavaFX smoke test
 
@@ -503,4 +503,74 @@ exit
 
 ```text
 [D][ ] Return book (by: Dec 02 2019, 6:00 PM)
+```
+
+## Test Case UI-023: Update a completed to-do title
+
+### Aim
+
+Verify that updating a to-do title preserves its completion status and list position.
+
+### Inputs
+
+```text
+todo Buy groceries
+mark 1
+update 1 /title Buy groceries and toiletries
+list
+exit
+```
+
+### Expected output
+
+```text
+[T][X] Buy groceries
+Updated: [T][X] Buy groceries and toiletries
+1. [T][X] Buy groceries and toiletries
+```
+
+## Test Case UI-024: Reject an invalid update atomically
+
+### Aim
+
+Verify that an invalid update reports the stable usage text and leaves the task unchanged.
+
+### Inputs
+
+```text
+deadline Submit report /by 2026-09-20 1800
+update 1 /by 2026-02-30
+list
+exit
+```
+
+### Expected output
+
+```text
+Loki error:
+Usage: update <task number> <field> [<field>...]
+Fields: todo=/title; deadline=/title,/by; event=/title,/from,/to
+1. [D][ ] Submit report (by: Sep 20 2026, 6:00 PM)
+```
+
+## Test Case UI-025: Update event fields in any order
+
+### Aim
+
+Verify that event update markers are case-insensitive, may appear in any order, and preserve omitted values.
+
+### Inputs
+
+```text
+event Project consultation /from 20/9/2026 1400 /to 20/9/2026 1600
+UPDATE 1 /TO 20/9/2026 1700 /TITLE Final consultation
+list
+exit
+```
+
+### Expected output
+
+```text
+Updated: [E][ ] Final consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)
+1. [E][ ] Final consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)
 ```
