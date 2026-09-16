@@ -60,6 +60,12 @@ public class Loki {
                                 ui.showTaskList(tasks);
                             }
                             break;
+                        case "help":
+                            if (!input.trim().equalsIgnoreCase("help")) {
+                                throw LokiExceptions.unknownCommand();
+                            }
+                            ui.showHelp();
+                            break;
                         case "mark":
                             ui.showSuccess(tasks.mark(parser.parseTaskNumber(input)).toString());
                             break;

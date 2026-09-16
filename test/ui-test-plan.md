@@ -12,12 +12,13 @@ Run `./gradlew run` with Java 25. A JavaFX window titled `Loki` should open.
 
 Enter `todo Buy groceries` and press Enter. The window should display the user command and a Loki response containing `[T][ ] Buy groceries`.
 Enter `list` and press Send. The window should display `1. [T][ ] Buy groceries` and scroll to the newest response.
+The opening greeting should suggest typing `help`, and entering `help` should list supported commands, usage, and examples.
 The Send button should be disabled for blank or whitespace-only input and enabled once a command is entered.
-The input field should remain at the bottom and the chat area should expand when the window is resized.
-User and Loki messages should use distinct avatars and bubble styles, with invalid-command responses visibly marked as errors.
+The input bar should remain at the bottom and the chat area should expand when the window is resized between its minimum and default sizes.
+User and Loki messages should use distinct alignments, speaker labels, and bubble styles; Loki replies should include a small circular Loki icon, and invalid-command responses should be visibly marked as errors.
 Entering `exit` or `faretheewell` should save the task list, show the farewell response briefly, and then close the JavaFX window.
 For malformed `todo`, `deadline`, or `event` commands, Loki should include the required syntax and a valid example.
-Normal Loki responses should use green message bubbles, error responses should use red message bubbles, and the visible text should use the larger font size.
+Normal Loki responses should use green message bubbles, user messages should use blue message bubbles, error responses should use a red accent and red text, the comic background should remain low-contrast, and the visible text should remain readable at the compact default size.
 
 Expected-output lines are checked in order. The test runner ignores surrounding whitespace and treats each expected line as a required substring, so randomized flavour text does not make the tests brittle.
 
@@ -573,4 +574,33 @@ exit
 ```text
 Updated: [E][ ] Final consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)
 1. [E][ ] Final consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)
+```
+
+## Test Case UI-026: Show command help
+
+### Aim
+
+Verify that `help` lists supported commands, usage, and examples without changing task state.
+
+### Inputs
+
+```text
+help
+help todo
+exit
+```
+
+### Expected output
+
+```text
+Commands:
+todo <task description>
+Example: todo Buy groceries
+update <task number> <field> [<field>...]
+To-do fields: /title <new title>
+Deadline fields: /title <new title>, /by <date/time>
+Event fields: /title <new title>, /from <date/time>, /to <date/time>
+Example: update 3 /title Final consultation /from 20/9/2026 1400 /to 20/9/2026 1600
+exit (alias: faretheewell)
+Loki error:
 ```

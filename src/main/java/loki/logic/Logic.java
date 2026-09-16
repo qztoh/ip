@@ -21,6 +21,36 @@ public class Logic {
     private static final String EVENT_USAGE = "Usage: event <title> /from <date/time> /to <date/time>\n"
             + "Example: event Project meeting /from 2019-08-06 1400 /to 2019-08-06 1600\n"
             + "Use yyyy-MM-dd, yyyy-MM-dd HHmm, or d/M/yyyy HHmm for date/time values.";
+    private static final String HELP_RESPONSE = String.join(System.lineSeparator(),
+            "Commands:",
+            "  todo <task description>",
+            "    Example: todo Buy groceries",
+            "  deadline <task description> /by <date/time>",
+            "    Example: deadline Return book /by 2019-06-06",
+            "  event <title> /from <date/time> /to <date/time>",
+            "    Example: event Project meeting /from 2019-08-06 1400 /to 2019-08-06 1600",
+            "  list",
+            "    Example: list",
+            "  mark <task number>",
+            "    Example: mark 1",
+            "  unmark <task number>",
+            "    Example: unmark 1",
+            "  delete <task number>",
+            "    Example: delete 1",
+            "  update <task number> <field> [<field>...]",
+            "    Updates one or more fields while keeping the task type unchanged.",
+            "    To-do fields: /title <new title>",
+            "    Deadline fields: /title <new title>, /by <date/time>",
+            "    Event fields: /title <new title>, /from <date/time>, /to <date/time>",
+            "    Date formats: yyyy-MM-dd, yyyy-MM-dd HHmm, or d/M/yyyy HHmm",
+            "    Examples:",
+            "      update 1 /title Buy groceries and toiletries",
+            "      update 2 /by 20/9/2026 1800",
+            "      update 3 /title Final consultation /from 20/9/2026 1400 /to 20/9/2026 1600",
+            "  help",
+            "    Example: help",
+            "  exit (alias: faretheewell)",
+            "    Example: exit");
 
     private final Storage storage;
     private final Parser parser;
@@ -72,6 +102,12 @@ public class Logic {
                     yield "Farewell, mortal.";
                 }
                 case "list" -> formatTaskList();
+                case "help" -> {
+                    if (!input.trim().equalsIgnoreCase("help")) {
+                        throw LokiExceptions.unknownCommand();
+                    }
+                    yield HELP_RESPONSE;
+                }
                 case "mark" -> tasks.mark(parser.parseTaskNumber(input)).toString();
                 case "unmark" -> tasks.unmark(parser.parseTaskNumber(input)).toString();
                 case "todo", "deadline", "event" -> addTask(input);

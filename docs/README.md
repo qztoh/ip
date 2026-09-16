@@ -2,6 +2,10 @@
 
 Loki is a command-line task manager for to-dos, deadlines, and events.
 
+## Getting help
+
+Type `help` at any time to see all supported commands, their usage, and examples. Loki also suggests this command in the opening greeting.
+
 ## Updating tasks
 
 Use `update` with a one-based task number and one or more supported fields. Fields may appear in any order and are case-insensitive.

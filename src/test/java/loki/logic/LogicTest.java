@@ -41,6 +41,30 @@ class LogicTest {
     }
 
     @Test
+    void processCommand_help_returnsCommandGuide() {
+        Logic logic = createLogic();
+
+        String response = logic.processCommand("help");
+
+        assertTrue(response.startsWith("Commands:"));
+        assertTrue(response.contains("todo <task description>"));
+        assertTrue(response.contains("To-do fields: /title <new title>"));
+        assertTrue(response.contains("Deadline fields: /title <new title>, /by <date/time>"));
+        assertTrue(response.contains("Event fields: /title <new title>, /from <date/time>, /to <date/time>"));
+        assertTrue(response.contains("update 3 /title Final consultation /from 20/9/2026 1400"));
+        assertTrue(response.contains("exit (alias: faretheewell)"));
+    }
+
+    @Test
+    void processCommand_helpWithArguments_returnsError() {
+        Logic logic = createLogic();
+
+        String response = logic.processCommand("help todo");
+
+        assertTrue(response.startsWith("Loki error:"));
+    }
+
+    @Test
     void processCommand_listMixedTasks_preservesOrderNumberingAndStatus() {
         Logic logic = createLogic();
         logic.processCommand("todo Read book");
