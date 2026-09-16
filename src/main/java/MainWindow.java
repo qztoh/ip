@@ -20,7 +20,8 @@ import loki.logic.Logic;
  */
 public class MainWindow extends AnchorPane {
     private static final double FAREWELL_DELAY_SECONDS = 1.2;
-    private static final String GREETING = "Greetings, mortal. Loki at your service.";
+    private static final String GREETING = "Greetings, mortal. Loki at your service.\n"
+            + "Type 'help' to see commands and examples.";
     private static final String ERROR_PREFIX = "Loki error:";
 
     @FXML
