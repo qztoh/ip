@@ -13,6 +13,10 @@ import loki.storage.Storage;
 
 /** Provides command processing for non-console user interfaces. */
 public class Logic {
+    private static final String ADD_TASK_INTRO = "A cunning addition to your saga:";
+    private static final String STATUS_INTRO = "By Loki's decree:";
+    private static final String DELETE_OUTRO = "A little mischief, and it has vanished.";
+    private static final String FAREWELL = "Farewell, mortal. May your next quest be worthy of legend.";
     private static final String TODO_USAGE = "Usage: todo <task description>\n"
             + "Example: todo Buy groceries";
     private static final String DEADLINE_USAGE = "Usage: deadline <task description> /by <date/time>\n"
@@ -99,7 +103,7 @@ public class Logic {
             return switch (keyword) {
                 case "faretheewell", "exit" -> {
                     save();
-                    yield "Farewell, mortal.";
+                    yield FAREWELL;
                 }
                 case "list" -> formatTaskList();
                 case "help" -> {
@@ -108,8 +112,8 @@ public class Logic {
                     }
                     yield HELP_RESPONSE;
                 }
-                case "mark" -> tasks.mark(parser.parseTaskNumber(input)).toString();
-                case "unmark" -> tasks.unmark(parser.parseTaskNumber(input)).toString();
+                case "mark" -> STATUS_INTRO + "\n" + tasks.mark(parser.parseTaskNumber(input));
+                case "unmark" -> STATUS_INTRO + "\n" + tasks.unmark(parser.parseTaskNumber(input));
                 case "todo", "deadline", "event" -> addTask(input);
                 case "delete" -> deleteTask(input);
                 case "update" -> updateTask(input);
@@ -135,7 +139,7 @@ public class Logic {
     private String addTask(String input) throws LokiExceptions {
         Task task = parser.parseTask(input);
         tasks.add(task);
-        return task + "\nYou have " + tasks.size() + " tasks left to conquer.";
+        return ADD_TASK_INTRO + "\n" + task + "\nYou have " + tasks.size() + " tasks left to conquer.";
     }
 
     /**
@@ -147,7 +151,8 @@ public class Logic {
      */
     private String deleteTask(String input) throws LokiExceptions {
         Task deletedTask = tasks.delete(parser.parseTaskNumber(input));
-        return "Deleted: " + deletedTask + "\nYou have " + tasks.size() + " tasks left to conquer.";
+        return "Deleted: " + deletedTask + "\n" + DELETE_OUTRO + "\nYou have " + tasks.size()
+                + " tasks left to conquer.";
     }
 
     /**

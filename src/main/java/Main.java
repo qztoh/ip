@@ -31,7 +31,7 @@ public class Main extends Application {
             scene.getStylesheets().add(Main.class.getResource("/css/dialog-box.css").toExternalForm());
 
             stage.setScene(scene);
-            stage.setTitle("Loki");
+            stage.setTitle("Loki — Task Forge");
             stage.setResizable(true);
             stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
             stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);

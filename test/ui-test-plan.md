@@ -8,7 +8,12 @@ Run this plan from the repository root with Java 25.
 
 ## JavaFX smoke test
 
-Run `./gradlew run` with Java 25. A JavaFX window titled `Loki` should open.
+Run `./gradlew run` with Java 25. A JavaFX window titled `Loki — Task Forge` should open.
+
+The window header should read `✦ LOKI'S TASK FORGE` with the subtitle `Mischief,
+momentum, and mortal obligations.`. The Loki greeting should identify him as the
+God of Mischief. The command field should use the prompt `Whisper a command...`,
+and the action button should read `Cast ✦`.
 
 Enter `todo Buy groceries` and press Enter. The window should display the user command and a Loki response containing `[T][ ] Buy groceries`.
 Enter `list` and press Send. The window should display `1. [T][ ] Buy groceries` and scroll to the newest response.
@@ -290,8 +295,8 @@ exit
 ```text
 [D][ ] Submit report (by: Jun 06 2019)
 [E][ ] Project meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)
-1. [D][ ] Submit report (by: June 6th)
-2. [E][ ] Project meeting (from: Aug 6th 2pm to: 4pm)
+1. [D][ ] Submit report (by: Jun 06 2019)
+2. [E][ ] Project meeting (from: Aug 06 2019, 2:00 PM to: Aug 06 2019, 4:00 PM)
 ```
 
 ## Test Case UI-016: Malformed task commands do not create tasks
@@ -339,7 +344,7 @@ exit
 
 ```text
 You have 2 tasks left to conquer.
-Deleted: [T][ ] First task
+[T][ ] First task
 You have 1 tasks left to conquer.
 1. [T][ ] Second task
 ```
@@ -600,7 +605,7 @@ update <task number> <field> [<field>...]
 To-do fields: /title <new title>
 Deadline fields: /title <new title>, /by <date/time>
 Event fields: /title <new title>, /from <date/time>, /to <date/time>
-Example: update 3 /title Final consultation /from 20/9/2026 1400 /to 20/9/2026 1600
+update 3 /title Final consultation /from 20/9/2026 1400 /to 20/9/2026 1600
 exit (alias: faretheewell)
 Loki error:
 ```

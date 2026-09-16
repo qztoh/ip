@@ -6,12 +6,12 @@
 
 .dialog-box .message-label {
     -fx-background-radius: 14px 14px 14px 3px;
-    -fx-background-color: #dcfce7;
-    -fx-border-color: #86efac;
+    -fx-background-color: #193b32;
+    -fx-border-color: #4d9278;
     -fx-border-radius: 14px 14px 14px 3px;
     -fx-font-size: 16px;
     -fx-padding: 10px 13px;
-    -fx-text-fill: #1f2937;
+    -fx-text-fill: #f2eddf;
 }
 
 .speaker-label {
@@ -26,8 +26,8 @@
 }
 
 .user-dialog .message-label {
-    -fx-background-color: #dbeafe;
-    -fx-border-color: #bfdbfe;
+    -fx-background-color: #3a3020;
+    -fx-border-color: #b8944c;
     -fx-background-radius: 14px 14px 3px 14px;
     -fx-border-radius: 14px 14px 3px 14px;
 }
@@ -41,15 +41,15 @@
 }
 
 .loki-dialog .message-label {
-    -fx-background-color: #dcfce7;
-    -fx-border-color: #86efac;
+    -fx-background-color: #193b32;
+    -fx-border-color: #4d9278;
 }
 
 .error-dialog .message-label {
-    -fx-background-color: #fef2f2;
-    -fx-border-color: #ef4444;
+    -fx-background-color: #48252a;
+    -fx-border-color: #d77872;
     -fx-border-width: 0 0 0 4px;
-    -fx-text-fill: #991b1b;
+    -fx-text-fill: #ffd7cb;
 }
 
 .error-dialog .speaker-label {
