@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -31,7 +32,6 @@ public class MainWindow extends AnchorPane {
     @FXML
     private Button sendButton;
 
-    private final Image userImage = loadImage("/images/user.png");
     private final Image lokiImage = loadImage("/images/loki.png");
     private Logic logic;
     private boolean isClosing;
@@ -74,7 +74,7 @@ public class MainWindow extends AnchorPane {
         String response = logic.processCommand(userText);
         boolean isError = response.startsWith(ERROR_PREFIX);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(userText, userImage),
+                DialogBox.getUserDialog(userText),
                 DialogBox.getLokiDialog(response, lokiImage, isError));
         userInput.clear();
 
@@ -106,7 +106,7 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Loads a required image resource for the chat avatars.
+     * Loads the Loki icon from the application resources.
      *
      * @param resourcePath the classpath path of the image.
      * @return the loaded image.
@@ -116,7 +116,12 @@ public class MainWindow extends AnchorPane {
         if (imageStream == null) {
             throw new IllegalStateException("Missing GUI image resource: " + resourcePath);
         }
-        return new Image(imageStream);
+
+        try (imageStream) {
+            return new Image(imageStream);
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to load GUI image resource: " + resourcePath, exception);
+        }
     }
 
     /**

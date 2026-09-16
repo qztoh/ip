@@ -9,8 +9,10 @@ import javafx.stage.Stage;
  * Launches Loki's JavaFX graphical interface.
  */
 public class Main extends Application {
-    private static final double DEFAULT_WINDOW_HEIGHT = 600.0;
-    private static final double DEFAULT_WINDOW_WIDTH = 400.0;
+    private static final double DEFAULT_WINDOW_HEIGHT = 680.0;
+    private static final double DEFAULT_WINDOW_WIDTH = 520.0;
+    private static final double MINIMUM_WINDOW_HEIGHT = 480.0;
+    private static final double MINIMUM_WINDOW_WIDTH = 360.0;
 
     /**
      * Loads the FXML view and displays the primary Loki window.
@@ -30,8 +32,9 @@ public class Main extends Application {
 
             stage.setScene(scene);
             stage.setTitle("Loki");
-            stage.setMinWidth(DEFAULT_WINDOW_WIDTH);
-            stage.setMinHeight(DEFAULT_WINDOW_HEIGHT);
+            stage.setResizable(true);
+            stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
+            stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
             stage.setWidth(DEFAULT_WINDOW_WIDTH);
             stage.setHeight(DEFAULT_WINDOW_HEIGHT);
             stage.setOnCloseRequest(event -> mainWindow.saveData());

@@ -1,5 +1,9 @@
 .root {
-    -fx-background-color: #f4f6fb;
+    -fx-background-color: #f8fafc;
+    -fx-background-image: url("../images/comic-background.png");
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
     -fx-font-family: "Segoe UI", sans-serif;
 }
 
@@ -7,6 +11,11 @@
 .scroll-pane .viewport {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+}
+
+.scroll-pane .content {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 0 14px 0;
 }
 
 .scroll-bar:vertical {
@@ -19,13 +28,20 @@
     -fx-background-radius: 8px;
 }
 
+.input-bar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0 transparent transparent transparent;
+    -fx-padding: 12px 14px 14px 14px;
+}
+
 .text-field {
-    -fx-background-color: white;
+    -fx-background-color: #f8fafc;
     -fx-background-radius: 8px;
     -fx-border-color: #d7dce6;
     -fx-border-radius: 8px;
-    -fx-font-size: 18px;
+    -fx-font-size: 16px;
     -fx-padding: 0 12px;
+    -fx-pref-height: 44px;
 }
 
 .text-field:focused {
@@ -36,8 +52,10 @@
 .button {
     -fx-background-color: #4f46e5;
     -fx-background-radius: 8px;
-    -fx-font-size: 18px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
+    -fx-min-width: 76px;
+    -fx-pref-height: 44px;
     -fx-text-fill: white;
 }
 
