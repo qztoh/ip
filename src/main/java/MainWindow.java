@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,8 +21,8 @@ import loki.logic.Logic;
  */
 public class MainWindow extends AnchorPane {
     private static final double FAREWELL_DELAY_SECONDS = 1.2;
-    private static final String GREETING = "Greetings, mortal. Loki at your service.\n"
-            + "Type 'help' to see commands and examples.";
+    private static final String GREETING = "Ah, a new quest. Loki, God of Mischief, is ready to bend your tasks "
+            + "to his will.\nType 'help' to see commands and examples.";
     private static final String ERROR_PREFIX = "Loki error:";
 
     @FXML
@@ -32,6 +33,8 @@ public class MainWindow extends AnchorPane {
     private TextField userInput;
     @FXML
     private Button sendButton;
+    @FXML
+    private ImageView headerAvatar;
 
     private final Image lokiImage = loadImage("/images/loki.png");
     private Logic logic;
@@ -42,6 +45,7 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     public void initialize() {
+        headerAvatar.setImage(lokiImage);
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) ->

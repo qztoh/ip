@@ -29,6 +29,7 @@ class LogicTest {
         String addResponse = logic.processCommand("todo Buy groceries");
         String listResponse = logic.processCommand("list");
 
+        assertTrue(addResponse.contains("A cunning addition to your saga:"));
         assertTrue(addResponse.contains("[T][ ] Buy groceries"));
         assertTrue(listResponse.contains("1. [T][ ] Buy groceries"));
     }
@@ -153,7 +154,7 @@ class LogicTest {
         String response = logic.processCommand("exit");
         Logic reloadedLogic = createLogic();
 
-        assertTrue(response.contains("Farewell, mortal."));
+        assertTrue(response.contains("Farewell, mortal. May your next quest be worthy of legend."));
         assertTrue(reloadedLogic.processCommand("list").contains("Remember to rest"));
     }
 

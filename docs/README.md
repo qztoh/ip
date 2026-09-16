@@ -4,7 +4,19 @@ Loki is a command-line task manager for to-dos, deadlines, and events.
 
 ## Getting help
 
-Type `help` at any time to see all supported commands, their usage, and examples. Loki also suggests this command in the opening greeting.
+Type `help` at any time to see all supported commands, their usage, and examples.
+Loki also suggests this command in the opening greeting.
+
+## Personality
+
+Loki is presented as a theatrical God of Mischief who turns task management into a
+small heroic quest. Successful additions, status changes, deletions, and farewells
+use concise Norse-inspired phrases while keeping the task details easy to scan.
+
+The JavaFX interface reinforces this identity with a dark emerald and charcoal
+palette, gold accents, the Loki avatar, a serif display title, and the playful
+`Cast ✦` action button. The existing command syntax and canonical task formatting
+remain unchanged.
 
 ## Updating tasks
 
