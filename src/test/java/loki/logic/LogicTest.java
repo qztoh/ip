@@ -1,8 +1,10 @@
 package loki.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,13 @@ import org.junit.jupiter.api.io.TempDir;
 
 /** Tests GUI-facing command processing in {@link Logic}. */
 class LogicTest {
+    private static final String UPDATE_USAGE = "Usage: update <task number> <field> [<field>...]\n"
+            + "Fields: todo=/title; deadline=/title,/by; event=/title,/from,/to\n"
+            + "Examples:\n"
+            + "update 1 /title Buy groceries\n"
+            + "update 2 /by 2019-06-06\n"
+            + "update 3 /from 2019-08-06 1400 /to 2019-08-06 1600";
+
     @TempDir
     Path temporaryDirectory;
 
@@ -122,6 +131,62 @@ class LogicTest {
 
         assertTrue(response.contains("Farewell, mortal."));
         assertTrue(reloadedLogic.processCommand("list").contains("Remember to rest"));
+    }
+
+    @Test
+    void processCommand_updateMixedFields_preservesTypeStatusAndOrder() {
+        Logic logic = createLogic();
+        logic.processCommand("todo Read notes");
+        logic.processCommand("deadline Submit report /by 2026-09-20 1800");
+        logic.processCommand("event Consultation /from 2026-09-20 1400 /to 2026-09-20 1600");
+        logic.processCommand("mark 2");
+
+        String response = logic.processCommand(
+                "UPDATE 3 /TO 20/9/2026 1700 /TITLE Project consultation /FROM 20/9/2026 1400");
+
+        assertEquals("Updated: [E][ ] Project consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)",
+                response);
+        assertEquals(String.join(System.lineSeparator(),
+                "1. [T][ ] Read notes",
+                "2. [D][X] Submit report (by: Sep 20 2026, 6:00 PM)",
+                "3. [E][ ] Project consultation (from: Sep 20 2026, 2:00 PM to: Sep 20 2026, 5:00 PM)"),
+                logic.processCommand("list"));
+    }
+
+    @Test
+    void processCommand_updateIdenticalValue_succeeds() {
+        Logic logic = createLogic();
+        logic.processCommand("todo Buy groceries");
+
+        assertEquals("Updated: [T][ ] Buy groceries", logic.processCommand("update 1 /title Buy groceries"));
+    }
+
+    @Test
+    void processCommand_invalidUpdate_returnsUsageAndLeavesTaskUnchanged() {
+        Logic logic = createLogic();
+        logic.processCommand("todo Keep this task");
+        String before = logic.processCommand("list");
+
+        String response = logic.processCommand("update 1 /by 2026-09-20");
+
+        assertTrue(response.startsWith("Loki error:"));
+        assertTrue(response.endsWith(UPDATE_USAGE));
+        assertEquals(before, logic.processCommand("list"));
+    }
+
+    @Test
+    void processCommand_updateIsSavedOnlyAtNormalSavePoint() {
+        Path taskFile = temporaryDirectory.resolve("tasks.txt");
+        Logic logic = new Logic(taskFile.toString());
+        logic.processCommand("deadline Submit report /by 2026-09-20 1800");
+        logic.processCommand("update 1 /title Submit final report");
+
+        assertFalse(Files.exists(taskFile));
+
+        logic.processCommand("exit");
+        Logic reloadedLogic = new Logic(taskFile.toString());
+        assertEquals("1. [D][ ] Submit final report (by: Sep 20 2026, 6:00 PM)",
+                reloadedLogic.processCommand("list"));
     }
 
     /**

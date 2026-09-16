@@ -3,6 +3,7 @@ package loki.model;
 import java.time.LocalDateTime;
 
 import loki.parser.DateTimeParser;
+import loki.parser.TaskUpdate;
 
 /**
  * A task that must be completed before a specified time.
@@ -113,5 +114,22 @@ public class Deadline extends Task {
         int status = isDone() ? 1 : 0;
         return String.format("D | %d | %s | %s", status, getTitle(),
                 DateTimeParser.formatForStorage(due));
+    }
+
+    /**
+     * Creates an updated deadline while preserving its completion status.
+     *
+     * @param update the replacement fields.
+     * @return the updated deadline.
+     * @throws IllegalArgumentException if the update contains event fields.
+     */
+    @Override
+    public Task updatedWith(TaskUpdate update) {
+        if (update.getEventStart().isPresent() || update.getEventEnd().isPresent()) {
+            throw new IllegalArgumentException("A deadline does not support event fields");
+        }
+        String title = update.getTitle().orElse(getTitle());
+        LocalDateTime updatedDue = update.getDeadline().orElse(due);
+        return new Deadline(title, isDone(), updatedDue);
     }
 }

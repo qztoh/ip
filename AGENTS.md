@@ -21,6 +21,7 @@ Unless the user says otherwise, assume that you are assisting a student working 
   * Add explanatory Javadoc comments to all classes and to nontrivial methods and fields when their purpose or behavior is not obvious.
   * Make generated code as self-explanatory as possible, and include explanatory comments where they improve understanding.
   * When faced with a design choice, choose the simplest option that is sufficient for the requirements, while briefly explaining relevant more advanced alternatives.
+  * For non-trivial feature requests without an approved implementation-ready specification, suggest using `$specify-before-implementing` and follow its stage gates when invoked. Continue to suggest it in future feature-work chats in this repository.
 
 # Project-specific requirements
 

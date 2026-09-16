@@ -1,5 +1,7 @@
 package loki.model;
 
+import loki.parser.TaskUpdate;
+
 /**
  * Represents one task entered by the user.
  */
@@ -109,4 +111,13 @@ public abstract class Task {
      * @return the serialized task.
      */
     public abstract String saveString();
+
+    /**
+     * Creates a replacement task using the supplied update fields.
+     *
+     * @param update the validated field values.
+     * @return a replacement task of the same concrete type.
+     * @throws IllegalArgumentException if the update does not apply to this task type.
+     */
+    public abstract Task updatedWith(TaskUpdate update);
 }

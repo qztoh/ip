@@ -7,13 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import loki.exception.LokiExceptions;
+import loki.parser.Parser;
+import loki.parser.TaskUpdate;
 
 /** Tests task storage, lookup, mutation, and read-only access in {@link TaskList}. */
 class TaskListTest {
@@ -245,5 +249,69 @@ class TaskListTest {
     @Test
     void iterator_traversesTasksInInsertionOrder() {
         assertIterableEquals(List.of(firstTask, secondTask, thirdTask), taskList);
+    }
+
+    @Test
+    void update_toDoTitle_preservesTypeStatusAndPosition() throws LokiExceptions {
+        firstTask.markDone();
+        TaskUpdate update = new Parser().parseUpdate("update 1 /title renamed first task");
+
+        Task replacement = taskList.update(update);
+
+        assertTrue(replacement instanceof ToDo);
+        assertTrue(replacement.isDone());
+        assertEquals("[T][X] renamed first task", replacement.toString());
+        assertSame(replacement, taskList.get(1));
+        assertSame(secondTask, taskList.get(2));
+        assertSame(thirdTask, taskList.get(3));
+    }
+
+    @Test
+    void update_deadlineAndEvent_preservesUnchangedFields() throws LokiExceptions {
+        TaskList mixedTaskList = new TaskList();
+        Deadline deadline = new Deadline("Submit report", LocalDateTime.of(2026, 9, 20, 18, 0));
+        Event event = new Event("Consultation", LocalDateTime.of(2026, 9, 20, 14, 0),
+                LocalDateTime.of(2026, 9, 20, 16, 0));
+        deadline.markDone();
+        mixedTaskList.add(deadline);
+        mixedTaskList.add(event);
+
+        Task updatedDeadline = mixedTaskList.update(
+                new Parser().parseUpdate("update 1 /title Submit final report"));
+        Task updatedEvent = mixedTaskList.update(
+                new Parser().parseUpdate("update 2 /to 20/9/2026 1700"));
+
+        assertEquals("D | 1 | Submit final report | 2026-09-20T18:00:00", updatedDeadline.saveString());
+        assertEquals("E | 0 | Consultation | 2026-09-20T14:00:00 -> 2026-09-20T17:00:00",
+                updatedEvent.saveString());
+    }
+
+    @Test
+    void update_invalidReplacement_leavesOriginalTaskUnchanged() throws LokiExceptions {
+        Task originalTask = taskList.get(1);
+        TaskUpdate incompatibleUpdate = new TaskUpdate(1, Optional.empty(),
+                Optional.of(LocalDateTime.of(2026, 9, 20, 18, 0)), Optional.empty(), Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> taskList.update(incompatibleUpdate));
+
+        assertSame(originalTask, taskList.get(1));
+        assertEquals("[T][ ] first task", taskList.get(1).toString());
+    }
+
+    @Test
+    void update_reversedEventReplacement_leavesOriginalEventUnchanged() throws LokiExceptions {
+        TaskList eventTaskList = new TaskList();
+        LocalDateTime start = LocalDateTime.of(2026, 9, 20, 14, 0);
+        LocalDateTime end = LocalDateTime.of(2026, 9, 20, 16, 0);
+        Event originalEvent = new Event("Consultation", start, end);
+        eventTaskList.add(originalEvent);
+        TaskUpdate reversedUpdate = new TaskUpdate(1, Optional.empty(), Optional.empty(),
+                Optional.of(end), Optional.of(start));
+
+        assertThrows(IllegalArgumentException.class, () -> eventTaskList.update(reversedUpdate));
+
+        assertSame(originalEvent, eventTaskList.get(1));
+        assertEquals("E | 0 | Consultation | 2026-09-20T14:00:00 -> 2026-09-20T16:00:00",
+                eventTaskList.get(1).saveString());
     }
 }
